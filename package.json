@@ -1,0 +1,12 @@
+{
+  "name": "pushme-dev",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind-admin.config.js",
+  "scripts": {
+    "tailwind:admin": "NODE_ENV=production npx tailwindcss -i ./src/css/admin.css -c ./tailwind-admin.config.js -o ./public/css/admin.min.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
