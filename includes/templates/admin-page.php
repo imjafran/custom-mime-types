@@ -1,6 +1,6 @@
 <!-- wrapper  -->
 
-<div class="wrap pushme-wrapper p-0 m-0" id="pushme-admin">
+<div class="wrap pushme-admin-wrapper" id="pushme-admin">
     <nav class="pushme-nav bg-indigo-400 flex items-center cursor-pointer uppercase">
         <div class="text-lg px-4 text-white focus:text-white">Pushme</div>
         <a href="#/dashboard" class="px-4 py-3 text-white hover:text-white hover:bg-indigo-500 focus:text-white focus:bg-indigo-500 transition duration-150">Dashboard</a>
@@ -16,6 +16,18 @@
 
         <!-- projects  -->
         <section data-content="projects" style="display: none;">
+            <div class="text-right my-4 clear block">
+                <a href="" class="button">Add Project</a>
+
+                <div>
+                    <form action="">
+                        <div class="mb-3">
+                            <label for="">Project Name</label>
+                            <input type="text">
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div class="border border-gray-200 rounded-sm">
                 <div class="overflow-auto">
                     <table class="table w-full" id="pushme-projects">
@@ -31,11 +43,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="h-10" v-for="project in projects.items">
+                            <tr class="h-10 text-sm" v-for="project in projects.items">
                                 <td class="text-center">{{project.id}}</td>
                                 <td class="text-left">Jafran Hasan</td>
                                 <td class="text-left" @dblclick.prevent="project.edit_name = true" v-on:keyup.enter="project.edit_name = false; update_project(project)">
-                                    <input v-if="project.edit_name" type="text" v-model="project.name" class="inline-block px-3 py-2 rounded-sm border border-gray-100">
+                                    <input v-if="project.edit_name" type="text" v-model="project.name" class="form-input inline-block px-3 py-2 rounded-sm border border-gray-100">
                                     <span v-else>{{project.name}}</span>
                                 </td>
                                 <td class="text-left">{{project.channel}}</td>

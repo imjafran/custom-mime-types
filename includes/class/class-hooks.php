@@ -42,8 +42,8 @@ class Hooks
         wp_register_script('pushme_options', '');
         wp_localize_script('pushme_options', 'pushme_options', $pushme_options);
         wp_enqueue_script('pushme_options');
-        wp_enqueue_script('pushme-vue', 'https://unpkg.com/vue@next');
-        wp_enqueue_style('pushme-admin', 'https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css');
-        wp_enqueue_script('pushme-admin', plugin_dir_url( PUSHME_FILE ) . 'dist/js/pushme.js', ['jquery'], filemtime(plugin_dir_path( PUSHME_FILE ) . 'dist/js/pushme.js'), true);
+        wp_enqueue_script('pushme-vue', 'https://unpkg.com/vue@next'); 
+        wp_enqueue_style('pushme-admin', plugin_dir_url( PUSHME_FILE ) . 'public/css/admin.min.css', [], filemtime(plugin_dir_path( PUSHME_FILE ) . 'public/css/admin.min.css'));
+        wp_enqueue_script('pushme-admin', plugin_dir_url( PUSHME_FILE ) . 'public/js/admin.js', ['jquery'], filemtime(plugin_dir_path( PUSHME_FILE ) . 'public/js/admin.js'), true);
     }
 }

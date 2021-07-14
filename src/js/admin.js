@@ -1,6 +1,8 @@
+ 
+
 if (typeof $ == "undefined") var $ = jQuery;
 
-const pushme = {};
+export const pushme = {};
 
 pushme.show = (target = "dashboard") => {
   $(".pushme-contents")
@@ -20,10 +22,10 @@ $(document).on("click", ".pushme-nav a", function (e) {
 window.addEventListener("DOMContentLoaded", function () {
   // show section
   let target = window.location.hash.replace("#/", "");
-  pushme.show(target.length ? target : 'projects');
+  pushme.show(target.length ? target : "projects");
 });
 
-const pushme_vue = Vue.createApp({
+export const pushme_vue = Vue.createApp({
   data() {
     return {
       projects: {
@@ -43,19 +45,24 @@ const pushme_vue = Vue.createApp({
         }
       );
     },
-      update_project(project) {
-        let self = this 
-        console.log(project);
-        $.post(`${pushme_options.ajaxurl}?action=pushme_project`, project, function (data) {
-            console.log(data);
-            self.loadProjects();
-        })
+    update_project(project) {
+      let self = this;
+      console.log(project);
+      $.post(
+        `${pushme_options.ajaxurl}?action=pushme_project`,
+        project,
+        function (data) {
+          console.log(data);
+          self.loadProjects();
+        }
+      );
     },
   },
   created() {
-    this.loadProjects();
+      this.loadProjects();
+      console.log("Loaded");
   },
   mounted() {},
 });
 
-const pushme_app = pushme_vue.mount("#pushme-admin");
+export const pushme_app = pushme_vue.mount("#pushme-admin");
