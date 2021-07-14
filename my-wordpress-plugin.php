@@ -1,10 +1,10 @@
 <?php 
 /**
- * Plugin name: Pushme
+ * Plugin name: My WordPress Plugin
  * Plugin URI: #
  * Author: Jafran
  * Author URI: #
- * Description: Pushme Integrations
+ * Description:  #
  */
 
 
