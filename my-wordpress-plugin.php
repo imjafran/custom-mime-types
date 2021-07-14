@@ -10,7 +10,7 @@
 
 defined('ABSPATH') or die();
 
-/**
+/** 
  * Definin
  */
 define('PUSHME_FILE', __FILE__);
