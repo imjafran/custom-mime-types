@@ -20,7 +20,7 @@ final class Hooks
     public function init()
     {
         add_action( 'admin_menu', [$this, 'load_admin_page'] );
-        add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'] );
+        add_action( 'wp_enqueue_scripts', [$this, 'admin_enqueue_scripts'] );
     }
  
 
@@ -40,10 +40,10 @@ final class Hooks
         ];
 
         wp_register_script('pushme_options', '');
-        wp_localize_script('pushme_options', 'pushme_options', $localizable_array);
+        wp_localize_script('pushme_options', '_pushme', $localizable_array);
         wp_enqueue_script('pushme_options');
         wp_enqueue_script('pushme-vue', 'https://unpkg.com/vue@next'); 
-        wp_enqueue_style('pushme-admin', plugin_dir_url( DEMO_PLUGIN_HANDLER ) . 'public/css/admin.min.css', [], filemtime(plugin_dir_path( DEMO_PLUGIN_HANDLER ) . 'public/css/admin.min.css'));
-        wp_enqueue_script('pushme-admin', plugin_dir_url( DEMO_PLUGIN_HANDLER ) . 'public/js/admin.js', ['jquery'], filemtime(plugin_dir_path( DEMO_PLUGIN_HANDLER ) . 'public/js/admin.js'), true);
+        wp_enqueue_style('pushme-public', plugin_dir_url( DEMO_PLUGIN_HANDLER ) . 'public/css/public.min.css');
+        wp_enqueue_script('pushme-public', plugin_dir_url( DEMO_PLUGIN_HANDLER ) . 'public/js/public.js', ['jquery'], filemtime(plugin_dir_path( DEMO_PLUGIN_HANDLER ) . 'public/js/public.js'), true);
     }
 }

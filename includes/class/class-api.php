@@ -5,8 +5,7 @@ namespace DEMO;
 defined('ABSPATH') or die();
 
 final class API
-{
-    use \DEMO\App;
+{ 
 
     public static function init()
     {

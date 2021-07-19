@@ -22,7 +22,7 @@ final class AdminAjax
 
         // all endpoints 
         $ajax_endpoints = [
-            'test' => 'test'
+            'admin-test' => 'admin_test'
         ];
 
         // register ajax 
@@ -31,7 +31,7 @@ final class AdminAjax
         }
     }
 
-    function test()
+    function admin_test()
     {
         wp_send_json_success();
     }

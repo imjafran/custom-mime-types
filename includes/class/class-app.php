@@ -40,9 +40,27 @@ final class App
      */
     public function load_required_files()
     {
+
+        /**
+         * Load composer if available */        
+
+        if( file_exists( plugin_dir_path( DEMO_PLUGIN_HANDLER ) . 'includes/vendor/autoload.php' ) ) {
+            require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/vendor/autoload.php';
+        }
+
+        /** Load and init reqauired files */
+        if( is_admin() )
+        {
+            require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/class/admin/class-admin-hooks.php';
+            $hooks = new AdminHooks();
+            $hooks->init();
+        }
+
+        /** Load and init reqauired files */
         require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/class/class-hooks.php';
         $hooks = new Hooks();
         $hooks->init();
+
     }
 
     /**
@@ -75,9 +93,11 @@ final class App
              * Load admin ajax 
              */
             if( current_user_can( 'edit_others_posts' ) ) {
+
                 require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/class/admin/class-admin-ajax.php';
                 $admin_ajax_class = new AdminAjax();
                 $admin_ajax_class->init();
+                
             }
 
             /**
