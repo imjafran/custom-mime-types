@@ -9,13 +9,13 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/admin.js":
-/*!*************************!*\
-  !*** ./src/js/admin.js ***!
-  \*************************/
+/***/ "./src/js/public.js":
+/*!**************************!*\
+  !*** ./src/js/public.js ***!
+  \**************************/
 /***/ (() => {
 
-eval("if (typeof $ == \"undefined\") var $ = jQuery;\nconsole.log(\"Demo Plugin Init Admin\");\n\n//# sourceURL=webpack://my-webpack-project/./src/js/admin.js?");
+eval("if (typeof $ == \"undefined\") var $ = jQuery;\nconsole.log(\"Demo Plugin Init Public\");\n\n//# sourceURL=webpack://my-webpack-project/./src/js/public.js?");
 
 /***/ })
 
@@ -26,7 +26,7 @@ eval("if (typeof $ == \"undefined\") var $ = jQuery;\nconsole.log(\"Demo Plugin 
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./src/js/admin.js"]();
+/******/ 	__webpack_modules__["./src/js/public.js"]();
 /******/ 	
 /******/ })()
 ;

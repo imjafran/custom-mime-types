@@ -1,56 +1,92 @@
 <?php
 
-namespace Pushme;
+namespace DEMO;
 
-defined('ABSPATH') or die();
 
-class App
+final class App
 {
- 
+
     /**
-     * On Activate Plugin
+     * Naming the app
      */
-    public function on_activate()
+    public const NAME = 'Demo Plugin';
+
+
+    /**
+     * App Version
+     */
+    public const VERSION = '1.0.0';
+
+
+    public static function init()
     {
-        $this->createDatabaseTable();
+
+        $instance = new self;
+
+        $instance->load_required_files();
+
+        register_activation_hook(DEMO_PLUGIN_HANDLER, [$instance, 'app_activation']);
+        register_deactivation_hook(DEMO_PLUGIN_HANDLER, [$instance, 'app_deactivation']);
+
+        /**
+         * Require the plugin file based on operation
+         */
+        add_action('init', [$instance, 'load_ajax_class'], 0);
+        add_action('rest_api_init', [$instance, 'load_api_class'], 0);
+    }
+
+    /**
+     * Load reqauired files
+     */
+    public function load_required_files()
+    {
+        require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/class/class-hooks.php';
+        $hooks = new Hooks();
+        $hooks->init();
+    }
+
+    /**
+     * App activation 
+     */
+    public function app_activation()
+    {
     }
 
 
     /**
-     * On Deactivate plugin
+     * App deactivation
      */
-    public function on_deactivate()
+    public function app_deactivation()
     {
-        
     }
 
 
     /**
-     * Create database
+     * 
+     * Load ajax class only if its an ajax request
      */
-    public function createDatabaseTable()
+
+    public function load_ajax_class()
     {
-        global $wpdb; 
 
-        $charset_collate = $wpdb->get_charset_collate();
+        if (wp_doing_ajax()) {
 
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        
-        $sql = "CREATE TABLE {$wpdb->prefix}pushme (
-                id mediumint(9) NOT NULL AUTO_INCREMENT,
-                user_id mediumint(9) DEFAULT NULL,
-                name varchar(250) DEFAULT NULL,
-                channel varchar(250) DEFAULT NULL,
-                active tinyint DEFAULT 1, 
-                push_key varchar(250) DEFAULT NULL,
-                fetch_key varchar(250) DEFAULT NULL,
-                origins varchar(250) DEFAULT NULL,
-                created datetime DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-                PRIMARY KEY  (id)
-                ) $charset_collate;";
-
-        dbDelta($sql);
-
+            require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/class/class-ajax.php';
+            $ajax_class = new Ajax();
+            $ajax_class->init();
+        }
     }
- 
+
+    /**
+     * 
+     * Load API class only if its an API request
+     */
+
+    public function load_api_class()
+    {
+
+        require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/class/class-api.php';
+        $api_class = new API();
+        $api_class->init();
+    }
 }

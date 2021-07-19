@@ -4,11 +4,12 @@
   "description": "My webpack project",
   "main": "src/index.js",
   "scripts": {
-    "tailwind:admin": "NODE_ENV=production npx tailwindcss -i ./src/css/admin.css -c ./tailwind-admin.config.js -o ./public/css/admin.min.css --minify",
-    "build": "webpack --mode=production --node-env=production",
-    "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
-    "watch": "webpack --watch"
+    "tailwind:admin": "NODE_ENV=production npx tailwindcss -i ./src/css/admin.min.css -c ./tailwind-admin.config.js -o ./public/css/admin.min.css --minify",
+    "tailwind:public": "NODE_ENV=production npx tailwindcss -i ./src/css/public.min.css -c ./tailwind-public.config.js -o ./public/css/public.min.css --minify",
+    "webpack": "webpack --mode=production --node-env=production",
+    "webpack:dev": "webpack --mode=development",
+    "webpack:prod": "webpack --mode=production --node-env=production",
+    "webpack:watch": "webpack --watch"
   },
   "keywords": [],
   "author": "",

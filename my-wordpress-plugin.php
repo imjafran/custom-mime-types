@@ -13,9 +13,16 @@ defined('ABSPATH') or die();
 /** 
  * Definin
  */
-define('PUSHME_FILE', __FILE__);
+define('DEMO_PLUGIN_HANDLER', __FILE__);
 
 /**
- * Requiring loader
+ * Loading the app
  */
-require_once plugin_dir_path( PUSHME_FILE ) . 'includes/class/class-loader.php';
+require_once plugin_dir_path( DEMO_PLUGIN_HANDLER ) . 'includes/class/class-app.php';
+
+
+/**
+ * 
+ * Init the App
+ */
+\Demo\App::init();
