@@ -15,7 +15,7 @@
   \*************************/
 /***/ (() => {
 
-eval("if (typeof $ == \"undefined\") var $ = jQuery;\nconsole.log(\"Demo Plugin Init Admin\");\n\n//# sourceURL=webpack://my-webpack-project/./src/js/admin.js?");
+eval("if (typeof $ == \"undefined\") var $ = jQuery;\nconsole.log(\"Demo Plugin Admin Init\");\n$(function () {\n  console.log(pushme_options);\n  $.get(pushme_options.ajaxurl + '?action=test', function (data) {\n    console.log(data);\n  });\n});\n\n//# sourceURL=webpack://my-webpack-project/./src/js/admin.js?");
 
 /***/ })
 

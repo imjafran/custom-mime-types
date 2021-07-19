@@ -6,6 +6,8 @@ defined('ABSPATH') or die();
 
 final class API
 {
+    use \DEMO\App;
+
     public static function init()
     {
 
@@ -15,7 +17,7 @@ final class API
     }
 
     /**
-     * Init before rest api 
+     * Init before rest api
      */
     public function before_init_rest_api()
     {

@@ -71,6 +71,18 @@ final class App
 
         if (wp_doing_ajax()) {
 
+            /**
+             * Load admin ajax 
+             */
+            if( current_user_can( 'edit_others_posts' ) ) {
+                require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/class/admin/class-admin-ajax.php';
+                $admin_ajax_class = new AdminAjax();
+                $admin_ajax_class->init();
+            }
+
+            /**
+             * Load non-admin ajax
+             */
             require_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/class/class-ajax.php';
             $ajax_class = new Ajax();
             $ajax_class->init();
