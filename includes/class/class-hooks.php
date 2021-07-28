@@ -1,49 +1,55 @@
 <?php
 
-namespace DEMO;
+namespace Custom_MIME_Types;
 
 /**
  * Prevent direct script
  */
 defined('ABSPATH') or die();
 
-
-/**
- * Class Hooks
- */
-final class Hooks
-{
-
+if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
     /**
-     * Init Hooks
+     * Class Hooks
      */
-    public function init()
+    final class Hooks
     {
-        add_action( 'admin_menu', [$this, 'load_admin_page'] );
-        add_action( 'wp_enqueue_scripts', [$this, 'admin_enqueue_scripts'] );
-    }
- 
 
-    function load_admin_page(){
-        
-        add_menu_page( 'Pushme Admin', 'Pushme Admin', 'edit_others_posts', 'pushme-admin', function(){
-            include_once plugin_dir_path(DEMO_PLUGIN_HANDLER) . 'includes/templates/admin/dashboard.php';
-        }, 'dashicons-bell');
-         
-    }
+        /**
+         * Init Hooks
+         */
+        public function init()
+        { 
+            /**
+             * Admin hooks
+             */
+            add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'] );
+            add_action( 'admin_menu', [$this, 'admin_settings_page'] );
 
-    public function admin_enqueue_scripts()
-    {
-        $localizable_array = [
-            "home" => home_url(),
-            'ajaxurl' => admin_url('admin-ajax.php')
-        ];
+            
+        }
+    
+    
 
-        wp_register_script('pushme_options', '');
-        wp_localize_script('pushme_options', '_pushme', $localizable_array);
-        wp_enqueue_script('pushme_options');
-        wp_enqueue_script('pushme-vue', 'https://unpkg.com/vue@next'); 
-        wp_enqueue_style('pushme-public', plugin_dir_url( DEMO_PLUGIN_HANDLER ) . 'public/css/public.min.css');
-        wp_enqueue_script('pushme-public', plugin_dir_url( DEMO_PLUGIN_HANDLER ) . 'public/js/public.js', ['jquery'], filemtime(plugin_dir_path( DEMO_PLUGIN_HANDLER ) . 'public/js/public.js'), true);
+        public function admin_enqueue_scripts()
+        {
+            $localizable_array = [
+                "home" => home_url(),
+                'ajaxurl' => admin_url('admin-ajax.php')
+            ];
+
+            wp_register_script('cmt_options', '');
+            wp_localize_script('cmt_options', '_pushme', $localizable_array);
+            wp_enqueue_script('cmt_options');
+            wp_enqueue_script('cmt-vue', 'https://unpkg.com/vue@next'); 
+            wp_enqueue_style('cmt-admin', plugin_dir_url( CMT_FILE ) . 'public/css/admin.min.css');
+            wp_enqueue_script('cmt-admin', plugin_dir_url( CMT_FILE ) . 'public/js/admin.js', ['jquery'], filemtime(plugin_dir_path( CMT_FILE ) . 'public/js/admin.js'), true);
+        }
+
+        public function admin_settings_page()
+        {
+            add_submenu_page('options-general.php', 'Custom MIME Types', 'Custom MIME Types', 'administrator', 'custom-mime-types', function(){
+                include_once plugin_dir_path( CMT_FILE ) . 'includes/templates/admin/dashboard.php';
+            });
+        }
     }
 }

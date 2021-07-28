@@ -4,8 +4,7 @@
   "description": "My webpack project",
   "main": "src/index.js",
   "scripts": {
-    "tailwind:admin": "NODE_ENV=production npx tailwindcss -i ./src/css/admin.min.css -c ./tailwind-admin.config.js -o ./public/css/admin.min.css --minify",
-    "tailwind:public": "NODE_ENV=production npx tailwindcss -i ./src/css/public.min.css -c ./tailwind-public.config.js -o ./public/css/public.min.css --minify",
+    "tailwind": "NODE_ENV=production npx tailwindcss -i ./src/css/admin.min.css -c ./tailwind-admin.js -o ./public/css/admin.min.css --minify",
     "webpack": "webpack --mode=production --node-env=production",
     "webpack:dev": "webpack --mode=development",
     "webpack:prod": "webpack --mode=production --node-env=production",
@@ -17,9 +16,10 @@
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
+    "@tailwindcss/forms": "^0.3.3",
     "@webpack-cli/generators": "^2.2.0",
     "babel-loader": "^8.2.2",
-    "vue": "^3.1.4",
+    "vue": "^3.1.5",
     "webpack": "^5.44.0",
     "webpack-cli": "^4.7.2"
   }

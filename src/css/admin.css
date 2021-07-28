@@ -1,0 +1,1 @@
+@tailwind base;@tailwind components;.cmt_wrapper *{@apply focus:ring-0 focus:border-0}@tailwind utilities
