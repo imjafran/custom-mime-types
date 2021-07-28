@@ -15,13 +15,17 @@ module.exports = {
       black: colors.black,
       white: colors.white,
       red: colors.red,
-      green: colors.green,
+      green: colors.emerald,
       gray: colors.coolGray,
       sky: colors.sky,
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      // ...
+
+      backgroundImage: ["hover", "focus"],
+    },
   },
   plugins: [
     require("@tailwindcss/forms")({

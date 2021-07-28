@@ -7,21 +7,11 @@ cmt.init = () => {
     hash = hash.length == '' ? 'mimes' : hash
     if (hash) cmt.show(hash);
 }
-
-// cmt.loader = (width) => {
-//     let timer = setTimeout(() => {
-//         cmt_app.$data.loader = width
-//     }, 1000);
-// }
-
+ 
 cmt.show = (page) => {
     $(`[data-content="${page}"]`).fadeIn(200).siblings().hide(0)
 }
-
-$(function () {
-    cmt.init()
-})
-
+ 
 const cmt_vue = Vue.createApp({
     data() {
         return {
@@ -40,7 +30,8 @@ const cmt_vue = Vue.createApp({
         },
     },
     mounted() {
-        console.log("Vue init");
+        cmt.init();
+        
         $("[data-loader]").animate({ width: "100%", opacity: 0 }, 2000, function () {
             $('.cmt_loader').hide(0)
         })
