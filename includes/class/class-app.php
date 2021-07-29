@@ -59,6 +59,14 @@ if( !class_exists( '\Custom_MIME_Types\App' )) {
          */
         public function app_activation()
         {
+            $activated = (bool) get_option('_cmt_activated');            
+            
+            if(!$activated){
+                $hooks = new \Custom_MIME_Types\Hooks();
+                $hooks->reset_default_extentions();
+                update_option('_cmt_activated', 1);
+            }
+           
         }
 
 

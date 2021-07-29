@@ -27,18 +27,43 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
 
             
         }
-    
-    
+
+        function wp_roles_array()
+        {
+            $editable_roles = get_editable_roles();
+            foreach ($editable_roles as $role => $details) { 
+                $roles[esc_attr($role)] = translate_user_role($details['name']);
+            }
+            return $roles;
+        }
+
+        function default_suggestions(){
+            $default_suggestions = [
+                "webp" => "image/webp", 
+                "svg" => "image/svg",
+            ];
+
+            return apply_filters('cmt_default_suggestions', $default_suggestions );
+        }
+ 
+
+        function getExtentions(){
+            $mimes = json_decode(json_encode(maybe_unserialize(stripslashes(get_option('_cmt_mimes')))));
+            return $mimes;
+        }
 
         public function admin_enqueue_scripts()
         {
             $localizable_array = [
                 "home" => home_url(),
-                'ajaxurl' => admin_url('admin-ajax.php')
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'roles' => $this->wp_roles_array(),
+                'suggestions' => $this->default_suggestions(), 
+                'extentions' => $this->getExtentions()
             ];
 
             wp_register_script('cmt_options', '');
-            wp_localize_script('cmt_options', '_pushme', $localizable_array);
+            wp_localize_script('cmt_options', '_cmt', $localizable_array);
             wp_enqueue_script('cmt_options');
             wp_enqueue_script('cmt-vue', 'https://unpkg.com/vue@next'); 
             wp_enqueue_style('cmt-admin', plugin_dir_url( CMT_FILE ) . 'public/css/admin.min.css');
@@ -50,6 +75,23 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             add_submenu_page('options-general.php', 'Custom MIME Types', 'Custom MIME Types', 'administrator', 'custom-mime-types', function(){
                 include_once plugin_dir_path( CMT_FILE ) . 'includes/templates/admin/dashboard.php';
             });
+        }
+
+        function reset_default_extentions(){
+            $allowed_mimes = get_allowed_mime_types();
+
+            $new_mimes = [];
+            foreach($allowed_mimes as $ext => $types){
+                $new_mimes[$ext] = [
+                    'types' => $types,
+                    'roles' => ['administrator', 'editor', 'author'],
+                    'enabled' => 1
+                ];
+            }
+
+            $new_mimes = maybe_serialize(  $new_mimes );
+
+            update_option( '_cmt_mimes', $new_mimes );
         }
     }
 }

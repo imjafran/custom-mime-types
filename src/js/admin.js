@@ -1,41 +1,153 @@
-if (typeof $ == "undefined") var $ = jQuery; 
+if (typeof $ == "undefined") var $ = jQuery;
 
-const cmt = {}
+import serialize from "./serialize";
+
+const cmt = {};
 
 cmt.init = () => {
-    let hash = window.location.hash.replace('#', '')
-    hash = hash.length == '' ? 'mimes' : hash
-    if (hash) cmt.show(hash);
-}
- 
+  let hash = window.location.hash.replace("#", "");
+  hash = hash.length == "" ? "mimes" : hash;
+  if (hash) cmt.show(hash);
+};
+
 cmt.show = (page) => {
-    $(`[data-content="${page}"]`).fadeIn(200).siblings().hide(0)
-}
- 
+  $(`[data-content="${page}"]`).fadeIn(200).siblings().hide(0);
+};
+
 const cmt_vue = Vue.createApp({
-    data() {
-        return {
-            loader: 10,
-            mimes: [
-                { name: "" },
-            ]
-        }
+  data() {
+    return {
+      mode: "new",
+      current_extention: "",
+      current: {},
+      loader: 10,
+      per_page: 10,
+      pagination: 1,
+      search: "",
+      suggestions: {},
+      roles: {},
+      extentions: {},
+    };
+  },
+  computed: {
+    error() {
+      let msg = "",
+        current_ext = this.current_extention.toLowerCase();
+
+      if (
+        this.mode == "new" &&
+        current_ext.length > 0 &&
+        Object.keys(this.extentions).length
+      ) {
+        Object.keys(this.extentions).forEach((ext) => {
+          if (ext == current_ext || ext.split("|").includes(current_ext)) {
+            msg = "Extention exists!";
+          }
+        });
+      }
+
+      if (this.current.roles.length == 0) {
+        msg = "Select at least one role";
+      }
+
+      if (current_ext.length == 0) {
+        msg = "Extention name is required";
+      }
+
+      return msg;
     },
-    computed: {
-        
+  },
+  methods: {
+    show(page) {
+      cmt.show(page);
     },
-    methods: {
-        show(page) {
-            cmt.show(page)
+    toggleRole(role) {
+      let index = this.current.roles.indexOf(role);
+      if (index > -1) {
+        if (role == "administrator") return false;
+        this.current.roles.splice(index, 1);
+      } else {
+        this.current.roles.push(role);
+      }
+    },
+    mime_roles(mime) {
+      let roles = [];
+
+      mime.roles.forEach((role) => {
+        roles.push(this.roles[role]);
+      });
+
+      return roles.join(", ");
+    },
+    strip_extention() {
+      let ex = this.current_extention.toLowerCase();
+
+      ex = ex.replace(/[^a-z|]/, "");
+
+      this.current_extention = ex;
+    },
+    edit(ext) {
+      this.mode = "edit";
+      this.current_extention = ext;
+      this.current = this.extentions[ext];
+    },
+    newExt() {
+      this.mode = "new";
+      this.current_extention = "";
+      this.current = {
+        types: "",
+        roles: ["administrator"],
+        enabled: 1,
+      };
+    },
+    saveCurrent() {
+      this.extentions[this.current_extention] = this.current;
+      this.saveExtentions();
+    },
+    async saveExtentions() {
+      let mimes = serialize(this.extentions);
+
+      $.post(
+        _cmt.ajaxurl,
+        {
+          mimes: mimes,
+          action: "cmt_save_mimes",
         },
-    },
-    mounted() {
-        cmt.init();
-        
-        $("[data-loader]").animate({ width: "100%", opacity: 0 }, 2000, function () {
-            $('.cmt_loader').hide(0)
-        })
-    },
-})
+        function (res) {
+          console.log(res);
+          return res;
+        }
+      );
+      },
+      deleteMime(ext) {
+          if (this.extentions[ext].delete) {
+            //   console.log("delete 2");
+              delete this.extentions[ext];
+              this.saveExtentions()
+          } else {
+              this.extentions[ext].delete = true
+            //   console.log('delete 1');
+          }
+    }
+  },
+  created() {
+    this.roles = _cmt.roles;
+    this.suggestions = _cmt.suggestions;
+    this.extentions = _cmt.extentions;
+    this.newExt();
+    console.log(_cmt);
+  },
+  mounted() {
+    cmt.init();
+
+    $("[data-loader]").animate(
+      { width: "100%", opacity: 0 },
+      2000,
+      function () {
+        $(".cmt_loader").hide(0);
+      }
+    );
+  },
+});
 
 const cmt_app = cmt_vue.mount("#cmt_app");
