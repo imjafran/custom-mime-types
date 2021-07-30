@@ -45,8 +45,8 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
 
         function default_suggestions(){
             $default_suggestions = [
-                "webp" => "image/webp", 
-                "svg" => "image/svg",
+                "jhj" => "image/webp", 
+                "fgfg" => "image/svg",
             ];
 
             return apply_filters('cmt_default_suggestions', $default_suggestions );
@@ -133,7 +133,7 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             foreach($allowed_mimes as $ext => $types){
                 $new_mimes[$ext] = [
                     'types' => $types,
-                    'roles' => ['administrator', 'editor', 'author'],
+                    'roles' => ['superadmin', 'administrator', 'editor', 'author'],
                     'enabled' => 1
                 ];
             }

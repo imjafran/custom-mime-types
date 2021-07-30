@@ -1,10 +1,10 @@
 <?php 
 /**
- * Plugin name: Custom MIME Types
+ * Plugin name: Custom Mime Types
  * Plugin URI: #
  * Author: Jafran
  * Author URI: https://facebook.com/iamjafran
- * Description:  Add any custom MIME types to be uploaded from admin panel easily, upload various type of files.
+ * Description: Customize allowed uploadable file extention within a single click, upload various type of files on your website. Rolewise permission can be set. 
  * Textdomain: custommimetypes
  */
  

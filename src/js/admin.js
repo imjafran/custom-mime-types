@@ -74,7 +74,8 @@ const cmt_vue = Vue.createApp({
     },
     limit_error() {
       let upload_size = Number(
-        parseInt(this.max_upload_size) * parseInt(this.size_units[this.size_unit])
+        parseInt(this.max_upload_size) *
+          parseInt(this.size_units[this.size_unit])
       );
       return upload_size > _cmt.wp_max_upload_size;
     },
@@ -109,6 +110,20 @@ const cmt_vue = Vue.createApp({
 
       return sorted_extentions;
     },
+    getSuggestions() {
+      let suggestions = {},
+        i = 0;
+
+      if (Object.keys(this.suggestions).length > 0) {
+        Object.keys(this.suggestions).forEach((suggestion) => {
+          if (!Object.keys(this.extentions).includes(suggestion) && i < 10) {
+            suggestions[suggestion] = this.suggestions[suggestion];
+          }
+        });
+      }
+
+      return suggestions;
+    },
   },
   methods: {
     show(page) {
@@ -135,9 +150,16 @@ const cmt_vue = Vue.createApp({
     strip_extention() {
       let ex = this.current_extention.toLowerCase();
 
-      ex = ex.replace(/[^a-z|]/, "");
+      ex = ex.replace(/[^a-z|0-9]/, "");
 
       this.current_extention = ex;
+    },
+    strip_types() {
+      let types = this.current.types.toLowerCase();
+
+      types = types.replace(/[^a-z/0-9|,]/, "");
+
+      this.current.types = types;
     },
     edit(ext) {
       this.mode = "edit";
@@ -151,7 +173,6 @@ const cmt_vue = Vue.createApp({
           1000
         );
       }
-        
     },
     newExt() {
       this.mode = "new";
@@ -161,14 +182,14 @@ const cmt_vue = Vue.createApp({
         roles: ["administrator"],
         enabled: 1,
       };
-     if ($("#edit_mime").length) {
-       $("html, body").animate(
-         {
-           scrollTop: $("#edit_mime").offset().top,
-         },
-         1000
-       );
-     }
+      if ($("#edit_mime").length) {
+        $("html, body").animate(
+          {
+            scrollTop: $("#edit_mime").offset().top,
+          },
+          1000
+        );
+      }
     },
     saveCurrent() {
       clearTimeout(this.savedCurrentTimer);
@@ -180,13 +201,11 @@ const cmt_vue = Vue.createApp({
       this.savedCurrentTimer = setTimeout(() => {
         clearTimeout(this.savedCurrentTimer);
         this.savedCurrent = 0;
-      }, 2000);;
-
-
+      }, 2000);
     },
     saveSettings() {
       let mimes = serialize(this.extentions),
-          max_upload_size = Number(
+        max_upload_size = Number(
           parseInt(this.max_upload_size) *
             parseInt(this.size_units[this.size_unit])
         );
@@ -199,7 +218,7 @@ const cmt_vue = Vue.createApp({
           size_unit: this.size_unit,
           action: "cmt_save_settings",
         },
-        function (res) { 
+        function (res) {
           return res;
         }
       );
@@ -224,9 +243,9 @@ const cmt_vue = Vue.createApp({
       this.max_upload_size = this.max_upload_size.replace(/[^.0-9]/g, "");
     },
     saveSize() {
-       this.savedSize = 0;
+      this.savedSize = 0;
       clearTimeout(this.savedSizeTimer);
-      this.saveSettings()
+      this.saveSettings();
       this.savedSize = 1;
       this.savedSizeTimer = setTimeout(() => {
         clearTimeout(this.savedSizeTimer);
@@ -241,9 +260,10 @@ const cmt_vue = Vue.createApp({
     this.wp_max_upload_size = _cmt.wp_max_upload_size;
     this.size_units = _cmt.size_units;
     this.size_unit = _cmt.size_unit;
-    this.max_upload_size = parseInt(_cmt.max_upload_size) / parseInt(_cmt.size_units[_cmt.size_unit]);
+    this.max_upload_size =
+      parseInt(_cmt.max_upload_size) /
+      parseInt(_cmt.size_units[_cmt.size_unit]);
     this.newExt();
-    console.log(_cmt);
   },
   mounted() {
     cmt.init();
@@ -258,4 +278,4 @@ const cmt_vue = Vue.createApp({
   },
 });
 
-const cmt_app = cmt_vue.mount("#cmt_app");
+cmt_vue.mount("#cmt_app");
