@@ -143,6 +143,15 @@ const cmt_vue = Vue.createApp({
       this.mode = "edit";
       this.current_extention = ext;
       this.current = this.extentions[ext];
+      if ($("#edit_mime").length) {
+        $("html, body").animate(
+          {
+            scrollTop: $("#edit_mime").offset().top,
+          },
+          1000
+        );
+      }
+        
     },
     newExt() {
       this.mode = "new";
@@ -152,6 +161,14 @@ const cmt_vue = Vue.createApp({
         roles: ["administrator"],
         enabled: 1,
       };
+     if ($("#edit_mime").length) {
+       $("html, body").animate(
+         {
+           scrollTop: $("#edit_mime").offset().top,
+         },
+         1000
+       );
+     }
     },
     saveCurrent() {
       clearTimeout(this.savedCurrentTimer);
@@ -182,7 +199,7 @@ const cmt_vue = Vue.createApp({
           size_unit: this.size_unit,
           action: "cmt_save_settings",
         },
-        function (res) {
+        function (res) { 
           return res;
         }
       );
@@ -191,7 +208,7 @@ const cmt_vue = Vue.createApp({
       if (this.extentions[ext].delete) {
         //   console.log("delete 2");
         delete this.extentions[ext];
-        this.saveExtentions();
+        this.saveSettings();
       } else {
         this.extentions[ext].delete = true;
         //   console.log('delete 1');

@@ -25,6 +25,12 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'] );
             add_action( 'admin_menu', [$this, 'admin_settings_page'] );
 
+            /**
+             * Filter
+             */
+            add_filter('upload_size_limit', [$this, 'cmt_upload_size_limit'] );
+            add_filter('upload_mimes', [$this, 'cmt_upload_mimes'] );
+
             
         }
 
@@ -52,6 +58,27 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             return $mimes;
         }
 
+        function file_upload_max_size()
+        {
+            static $max_size = -1;
+
+            if ($max_size < 0) {
+                // Start with post_max_size.
+                $post_max_size = $this->parse_size(ini_get('post_max_size'));
+                if ($post_max_size > 0) {
+                    $max_size = $post_max_size;
+                }
+
+                // If upload_max_size is less, then reduce. Except if upload_max_size is
+                // zero, which indicates no limit.
+                $upload_max = $this->parse_size(ini_get('upload_max_filesize'));
+                if ($upload_max > 0 && $upload_max < $max_size) {
+                    $max_size = $upload_max;
+                }
+            }
+            return $max_size;
+        }
+
         function parse_size($size)
         {
             $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
@@ -62,7 +89,7 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             } else {
                 return round($size);
             }
-        } 
+        }
 
         public function admin_enqueue_scripts()
         {
@@ -72,7 +99,7 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
                 'roles' => $this->wp_roles_array(),
                 'suggestions' => $this->default_suggestions(), 
                 'extentions' => $this->getExtentions(), 
-                'wp_max_upload_size' => wp_max_upload_size(),
+                'wp_max_upload_size' => $this->file_upload_max_size(),
                 'max_upload_size' => get_option('_cmt_max_upload_size'),
                 'size_unit' => get_option('_cmt_size_unit'),
                 'size_units' => [
@@ -114,6 +141,33 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             $new_mimes = maybe_serialize(  $new_mimes );
 
             update_option( '_cmt_mimes', $new_mimes );
+        }
+
+        function cmt_upload_size_limit( $size ){
+
+            $custom_size = get_option('_cmt_max_upload_size');
+            return $custom_size; 
+        }
+
+        function cmt_upload_mimes( $mimes ){
+
+            $custom_mimes = $this->getExtentions();
+            $new_mimes_array = [];
+            $user = wp_get_current_user();
+
+            if($custom_mimes) {
+                foreach($custom_mimes as $ext => $mime) {
+                    $matched = array_intersect($mime->roles, (array) $user->roles);
+                    $enabled = (bool) $mime->enabled;
+
+                    if ( $matched && $enabled ) {
+                        $new_mimes_array[$ext] = $mime->types;
+                    } 
+
+                }
+            }
+ 
+            return $new_mimes_array;
         }
     }
 }

@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) or die();
 
 /** 
- * Definin
+ * Define 
  */
 define( 'CMT_FILE' , __FILE__);
 

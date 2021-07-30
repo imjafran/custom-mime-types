@@ -48,7 +48,7 @@ if (!class_exists('\Custom_MIME_Types\Ajax')) {
 
 
             // response 
-            wp_send_json_success();
+            wp_send_json_success($mimes);
         }
     
     }

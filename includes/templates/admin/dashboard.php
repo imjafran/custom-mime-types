@@ -21,18 +21,15 @@
         <section data-content="mimes" style="display: none;">
             <div class="flex justify-between flex-col sm:flex-row gap-3">
                 <div class="w-full overflow-auto">
-                    <div class="text-right mb-3 flex items-center justify-between text-sm">
-                        <div class="flex items-center h-10">
-
-                            <button :disabled="pagination == 1" :class="pagination == 1 ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="--pagination" class="inline-flex items-center px-3 py-2 roundded-sm transition duration-150"><span class="dashicons dashicons-arrow-left-alt2"></span> Previous</button>
-                            <button :disabled="pagination == max_pagination" :class="pagination == max_pagination ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="++pagination" class="inline-flex items-center rounded-sm px-3 py-2 mx-2 transition duration-150">Next <span class="dashicons dashicons-arrow-right-alt2"></span></button>
-
-                            <input type="text" v-model="search" @input="pagination = 1" class="form-input text-sm px-2 py-2 h-9" placeholder="Search Extention">
+                    <div class="text-right mb-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center"><input type="text" v-model="search" @input="pagination = 1" class="rounded-sm form-input text-sm px-2 py-2 h-8 sm:h-9" placeholder="Search Extention"></div>
+                            <a href="#" @click.prevent="newExt()" class="sm:mt-0 px-4 py-2 rounded-sm bg-sky-300 cursor-pointer bg-sky-50 hover:bg-sky-400 inline-flex items-center justify-center text-white hover:text-white focus:text-white">Add new</a>
                         </div>
-                        <a href="#" @click.prevent="newExt()" class="px-4 py-2 rounded-sm bg-sky-300 cursor-pointer bg-sky-50 hover:bg-sky-400 inline-flex items-center justify-center text-white hover:text-white">Add new</a>
+
                     </div>
                     <div class="overflow-auto w-full">
-                        <table v-if="Object.keys(getExtentions).length" class="mb-6 table-auto w-full p-0 m-0 bg-gray-50 border border-gray-100 overflow-hidden rounded-sm overflow-hidden">
+                        <table v-if="Object.keys(getExtentions).length" class="mb-4 table-auto w-full p-0 m-0 bg-gray-50 border border-gray-100 overflow-hidden rounded-sm overflow-hidden">
                             <thead class="border-b border-gray-200">
                                 <tr class="bg-gray-100 text-xs text-gray-500">
                                     <th scope="col" class="max-w-20 text-left font-normal px-3 py-3 border-r border-gray-200">{{Object.keys(getExtentions).length}} Extension{{Object.keys(getExtentions).length > 1 ? 's': '' }}</th>
@@ -49,23 +46,30 @@
                                     <td class="px-3  border-r border-gray-100 text-sm" @click.prevent="edit(ext)">{{mime_roles(mime)}}</td>
                                     <td class="px-3 text-center border-r border-gray-100 " @click.prevent="edit(ext)">{{mime.enabled ? 'Enabled' : 'Disabled'}}</td>
                                     <td class="h-12 text-right px-3 flex items-center justify-start">
-                                        <a href="#" :title="`(mime.enabled ? 'Disable' : 'Enable') .${mime.extention}`" @click.prevent="mime.enabled = !mime.enabled; saveExtentions()" class="mr-1 w-8 h-8 rounded-sm transition duration-150 inline-flex items-center justify-center focus:ring-0" :class="mime.enabled ? ['bg-red-200'] : ['bg-green-200']"><span class="dashicons text-white" :class="mime.enabled ? 'dashicons-no' : 'dashicons-yes'"></span></a>
+                                        <a href="#" :title="`(mime.enabled ? 'Disable' : 'Enable') .${mime.extention}`" @click.prevent="mime.enabled = !mime.enabled; saveSettings()" class="mr-1 w-8 h-8 rounded-sm transition duration-150 inline-flex items-center justify-center focus:ring-0" :class="mime.enabled ? ['bg-red-200'] : ['bg-green-200']"><span class="dashicons text-white" :class="mime.enabled ? 'dashicons-no' : 'dashicons-yes'"></span></a>
                                         <!-- <a href="#" :class="{'bg-sky-500' : current.extention == mime.extention && mode == 'edit'}" @click.prevent="edit(ext)" class="mx-1 bg-sky-200 text-gray-400 w-8 h-8 rounded-sm hover:bg-sky-400 transition duration-150 inline-flex items-center justify-center"><span class="dashicons dashicons-edit text-white"></span></a> -->
                                         <a href="#" v-if="!mime.delete" @click.prevent="mime.delete = true" :class="mime.delete ? ['bg-red-400'] : ['bg-red-100']" class="text-gray-400 w-8 h-8 rounded-sm hover:bg-red-400 transition duration-150 inline-flex items-center justify-center"><span class="dashicons dashicons-trash text-white"></span></a>
-                                        <a href="#" v-if="mime.delete" @click.prevent="deleteMime(ext)" class="ml-1 bg-red-100 text-red-400 px-3 hover:text-white h-8 rounded-sm hover:bg-red-400 hover:border hover:border-gray-100 transition duration-150 inline-flex items-center justify-center">Delete</a>
+
                                         <a href="#" v-if="mime.delete" @click.prevent="mime.delete = false" class="ml-1 bg-gray-200 text-gray-400 px-3 hover:text-gray-500 h-8 rounded-sm hover:bg-gray-100 hover:border hover:border-gray-100 transition duration-150 inline-flex items-center justify-center">Cancel</a>
+                                        <a href="#" v-if="mime.delete" @click.prevent="deleteMime(ext)" class="ml-1 bg-red-100 text-red-400 px-3 hover:text-white h-8 rounded-sm hover:bg-red-400 hover:border hover:border-gray-100 transition duration-150 inline-flex items-center justify-center">Delete</a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <div v-else class="bg-red-100 text-red-400 rounded-md m-3 px-6 py-4 text-center">No Extention Found</div>
+
+                        <div v-if="Object.keys(getExtentions).length == 0" class="bg-red-100 text-red-400 rounded-md m-3 px-6 py-4 text-center">No Extention Found</div>
+                    </div>
+                    <div v-if="Object.keys(getExtentions).length" class="flex items-center justify-between mt-2">
+                        <button :disabled="pagination == 1" :class="pagination == 1 ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="--pagination" class="inline-flex items-center px-3 py-2 roundded-sm transition duration-150"><span class="dashicons dashicons-arrow-left-alt2"></span> Previous</button>
+                        <button :disabled="pagination == max_pagination" :class="pagination == max_pagination ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="++pagination" class="inline-flex items-center rounded-sm px-3 py-2  transition duration-150">Next <span class="dashicons dashicons-arrow-right-alt2"></span></button>
+
                     </div>
 
                 </div>
                 <div class="max-w-96">
 
                     <!-- add type  -->
-                    <div class="bg-white rounded-sm">
+                    <div class="bg-white rounded-sm" id="edit_mime">
                         <div class="bg-gray-50 border border-gray-200 rounded-sm overflow-hidden">
                             <h3 class="py-3 text-center bg-gray-100 text-lg border-b border-gray-200">{{mode == 'new' ? 'Add Mime' : 'Edit Mime'}}</h3>
                             <div class="p-4">
@@ -128,8 +132,8 @@
                     <div>It's <span class="uppercase font-bold">NOT POSIBLE</span> to increase the limit more than {{size(wp_max_upload_size)}} using a plugin. Contact your hosting provider to increase the limit</div>
                 </div>
                 <div class="mb-4 px-4">
-                    <div class="flex items-center">
-                        <label for="" class="w-64 text-gray-500">Maximum Upload Size</label>
+                    <div class="flex items-center flex-col sm:flex-row">
+                        <label for="" class="w-64 text-gray-500 mb-2 mb:0">Maximum Upload Size</label>
                         <div class="w-full flex items-center">
                             <input v-model="max_upload_size" @input="strip_max_upload_size" type="text" class="form-input inline-block h-12 w-12 px-4" size="12" placeholder="Size">
                             <div class="relative">
@@ -152,7 +156,7 @@
                     </div>
                 </div>
                 <div class="mb-4 px-4">
-                    <div class="flex items-center">
+                    <div class="flex items-center flex-col sm:flex-row">
                         <label for="" class="w-64"></label>
                         <div class="w-full">
                             <div v-if="savedSize" class="bg-green-100 text-green-400 p-3 rounded-sm mb-2">Saved!</div>
@@ -170,6 +174,6 @@
 <style>
     #wpcontent {
         background: #fff;
-        padding: 0;
+        padding: 0 !important;
     }
 </style>
