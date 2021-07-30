@@ -32,10 +32,14 @@ const cmt_vue = Vue.createApp({
       suggestions: {},
       roles: {},
       extentions: {},
-      success_msg: "",
-      max_file_size: 20, 
-      max_file_size_mb: 'mb' ,
-      max_file_size_dropdown: false ,
+      savedCurrent: false,
+      savedCurrentTimer: false,
+      max_upload_size: 0,
+      savedSize: false,
+      savedSizeTimer: false,
+      size_units: [],
+      size_unit: "mb",
+      max_file_size_dropdown: false,
     };
   },
   computed: {
@@ -68,16 +72,30 @@ const cmt_vue = Vue.createApp({
 
       return msg;
     },
+    limit_error() {
+      let upload_size = Number(
+        parseInt(this.max_upload_size) * parseInt(this.size_units[this.size_unit])
+      );
+      return upload_size > _cmt.wp_max_upload_size;
+    },
     getExtentions() {
-      let s = this.search.trim().toLowerCase(), extentions = {}
-      
+      let s = this.search.trim().toLowerCase(),
+        extentions = {};
+
       if (this.extentions) {
         Object.keys(this.extentions).forEach((ext) => {
-          if(s.length == 0 || ext.search(s) > -1 || this.extentions[ext].types.search(s) > -1) extentions[ext] = this.extentions[ext]
+          if (
+            s.length == 0 ||
+            ext.search(s) > -1 ||
+            this.extentions[ext].types.search(s) > -1
+          )
+            extentions[ext] = this.extentions[ext];
         });
       }
 
-      this.max_pagination = Math.ceil(Object.keys(extentions).length / this.per_page);
+      this.max_pagination = Math.ceil(
+        Object.keys(extentions).length / this.per_page
+      );
 
       let sorted_keys = Object.keys(extentions).slice(
           (this.pagination - 1) * this.per_page,
@@ -85,13 +103,12 @@ const cmt_vue = Vue.createApp({
         ),
         sorted_extentions = {};
 
-      sorted_keys.forEach(sorted_key => {
+      sorted_keys.forEach((sorted_key) => {
         sorted_extentions[sorted_key] = this.extentions[sorted_key];
       });
- 
+
       return sorted_extentions;
-        
-    }
+    },
   },
   methods: {
     show(page) {
@@ -137,24 +154,35 @@ const cmt_vue = Vue.createApp({
       };
     },
     saveCurrent() {
+      clearTimeout(this.savedCurrentTimer);
+      this.savedCurrent = 0;
       this.extentions[this.current_extention] = this.current;
-      this.saveExtentions();
-      this.mode = "edit"
-      this.success_msg = "Saved!";
-    },
-    async saveSettings() {
+      this.saveSettings();
+      this.mode = "edit";
+      this.savedCurrent = 1;
+      this.savedCurrentTimer = setTimeout(() => {
+        clearTimeout(this.savedCurrentTimer);
+        this.savedCurrent = 0;
+      }, 2000);;
 
-      let
-        mimes = serialize(this.extentions),
-        uploads = 
+
+    },
+    saveSettings() {
+      let mimes = serialize(this.extentions),
+          max_upload_size = Number(
+          parseInt(this.max_upload_size) *
+            parseInt(this.size_units[this.size_unit])
+        );
 
       $.post(
         _cmt.ajaxurl,
         {
-          mimes: mimes,
+          mimes,
+          max_upload_size,
+          size_unit: this.size_unit,
           action: "cmt_save_settings",
         },
-        function (res) { 
+        function (res) {
           return res;
         }
       );
@@ -170,17 +198,33 @@ const cmt_vue = Vue.createApp({
       }
     },
     size(bytes) {
-      var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-      if (bytes == 0) return '0 Byte';
+      var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+      if (bytes == 0) return "0 Byte";
       var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-      return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
-    }
+      return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
+    },
+    strip_max_upload_size() {
+      this.max_upload_size = this.max_upload_size.replace(/[^.0-9]/g, "");
+    },
+    saveSize() {
+       this.savedSize = 0;
+      clearTimeout(this.savedSizeTimer);
+      this.saveSettings()
+      this.savedSize = 1;
+      this.savedSizeTimer = setTimeout(() => {
+        clearTimeout(this.savedSizeTimer);
+        this.savedSize = 0;
+      }, 3000);
+    },
   },
   created() {
     this.roles = _cmt.roles;
     this.suggestions = _cmt.suggestions;
     this.extentions = _cmt.extentions;
     this.wp_max_upload_size = _cmt.wp_max_upload_size;
+    this.size_units = _cmt.size_units;
+    this.size_unit = _cmt.size_unit;
+    this.max_upload_size = parseInt(_cmt.max_upload_size) / parseInt(_cmt.size_units[_cmt.size_unit]);
     this.newExt();
     console.log(_cmt);
   },

@@ -39,8 +39,12 @@ if (!class_exists('\Custom_MIME_Types\Ajax')) {
 
 
             // upload settings 
-            $_cmt_uploads = sanitize_text_field( $_REQUEST['uploads'] ?? false );
-            update_option('_cmt_uploads', $_cmt_uploads);
+            $max_upload_size = sanitize_text_field( $_REQUEST['max_upload_size'] ?? false );
+            update_option('_cmt_max_upload_size', $max_upload_size);
+
+            // size_unit
+            $size_unit = sanitize_text_field( $_REQUEST['size_unit'] ?? false );
+            update_option('_cmt_size_unit', $size_unit);
 
 
             // response 

@@ -73,8 +73,10 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
                 'suggestions' => $this->default_suggestions(), 
                 'extentions' => $this->getExtentions(), 
                 'wp_max_upload_size' => wp_max_upload_size(),
-                'sizes' => [
-                    'byteswp_max_upload_size' => 1, 
+                'max_upload_size' => get_option('_cmt_max_upload_size'),
+                'size_unit' => get_option('_cmt_size_unit'),
+                'size_units' => [
+                    'bytes' => 1, 
                     'kb' => KB_IN_BYTES,
                     'mb' => MB_IN_BYTES,
                     'gb' => GB_IN_BYTES,                   

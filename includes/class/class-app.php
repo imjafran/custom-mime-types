@@ -61,11 +61,15 @@ if( !class_exists( '\Custom_MIME_Types\App' )) {
         {
             $activated = (bool) get_option('_cmt_activated');            
             
-            if(!$activated){
+            // if(!$activated){
                 $hooks = new \Custom_MIME_Types\Hooks();
                 $hooks->reset_default_extentions();
+
+                update_option('_cmt_max_upload_size', wp_max_upload_size());
+                update_option('_cmt_size_unit','mb');
+
                 update_option('_cmt_activated', 1);
-            }
+            // }
            
         }
 

@@ -10,8 +10,8 @@
     <nav class="cmt_nav">
         <h3 class="cmt_header">Custom MIME Types</h3>
         <div class="cmt_ul">
-            <a data-href="mimes" href="#mimes" @click="show('mimes')" class="cmt_nav_a">Mimes</a>
-            <a data-href="settings" href="#settings" @click="show('settings')" class="cmt_nav_a">Settings</a>
+            <a data-href="mimes" href="#mimes" @click="show('mimes')" @keydown.left="show('mimes')" @keydown.right="show('settings')" class="cmt_nav_a">Mimes</a>
+            <a data-href="settings" href="#settings" @click="show('settings')" @keydown.left="show('mimes')" @keydown.right="show('settings')" class="cmt_nav_a">Settings</a>
         </div>
     </nav>
 
@@ -103,11 +103,11 @@
                                     </div>
                                 </div>
                                 <div class="mt-4 mb-4">
-                                    <div class="my-2 px-4 py-4 rounded-md bg-green-50 text-green-400 text-sm border border-green-100" v-if="success_msg">{{success_msg}}</div>
+                                    <div class="my-2 px-4 py-4 rounded-md bg-green-50 text-green-400 text-sm border border-green-100" v-if="savedCurrent">Saved Mime Type</div>
                                     <div class="my-2 px-4 py-4 rounded-md bg-red-50 text-red-400 text-sm border border-red-100" v-if="error">{{error}}</div>
                                     <div>
-                                        <button @click.prevent="saveCurrent()" v-if="!error" class="bg-sky-500 rounded-sm px-8 py-2 text-lg tracking-wide  text-white hover:bg-sky-600 transition duration-150">Save</button>
-                                        <button @click.prevent="newExt()" v-if="mode == 'edit'" class="ml-2 bg-gray-300 rounded-sm px-8 py-2 text-lg tracking-wide  text-white hover:bg-red-600 transition duration-150">Cancel</button>
+                                        <button @click.prevent="saveCurrent()" v-if="!error" class="rounded-sm text-lg bg-sky-300 hover:bg-sky-500 text-white focus:text-white px-8 py-2 transition duration-150">Save</button>
+                                        <button @click.prevent="newExt()" v-if="mode == 'edit'" class="rounded-sm text-lg ml-2 bg-gray-100 hover:bg-gray-300 text-gray-500  px-8 py-2 transition duration-150">Cancel</button>
                                     </div>
                                 </div>
                             </div>
@@ -123,18 +123,18 @@
         <section data-content="settings" style="display: none;">
             <h3 class="mb-3 text-xl text-gray-600">Common Settings</h3>
             <div class="p-4 rounded-md border border-gray-200">
-                <div class="bg-gray-100 mb-3 text-gray-500 px-4 py-6 rounded-sm text-sm tracking-wide">
+                <div class="bg-gray-100 mb-5 text-gray-500 px-4 py-6 rounded-sm text-sm tracking-wide">
                     <div><span class="font-bold">Important: </span>Maximum allowed upload size <span class="uppercase font-bold">{{size(wp_max_upload_size)}}</span> is configured by the server itself.</div>
                     <div>It's <span class="uppercase font-bold">NOT POSIBLE</span> to increase the limit more than {{size(wp_max_upload_size)}} using a plugin. Contact your hosting provider to increase the limit</div>
                 </div>
-                <div class="mb-3 px-4">
+                <div class="mb-4 px-4">
                     <div class="flex items-center">
-                        <label for="" class="w-64 text-gray-500">Maximum Upload File Size</label>
-                        <div class="flex items-center">
-                            <input type="text" class="form-input inline-block h-9 w-12 px-4" size="12" placeholder="Size">
+                        <label for="" class="w-64 text-gray-500">Maximum Upload Size</label>
+                        <div class="w-full flex items-center">
+                            <input v-model="max_upload_size" @input="strip_max_upload_size" type="text" class="form-input inline-block h-12 w-12 px-4" size="12" placeholder="Size">
                             <div class="relative">
-                                <button @click="max_file_size_dropdown = !max_file_size_dropdown" class="border border-gray-100 relative z-10 block bg-white p-2 focus:outline-none flex items-center">
-                                    <span class="mr-2  text-gray-500">{{max_file_size_mb.toUpperCase()}}</span>
+                                <button @click="max_file_size_dropdown = !max_file_size_dropdown" class="border border-gray-100 relative z-10 block bg-white px-6 h-12 focus:outline-none flex items-center">
+                                    <span class="mr-2  text-gray-500">{{size_unit.toUpperCase()}}</span>
                                     <svg class="h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                     </svg>
@@ -143,11 +143,21 @@
                                 <div v-show="max_file_size_dropdown" @click="max_file_size_dropdown = false" class="fixed inset-0 h-full w-full z-10"></div>
 
                                 <div v-show="max_file_size_dropdown" class="absolute right-0  w-32 bg-white rounded-md shadow-xl z-20">
-                                    <a v-for="mb in ['bytes', 'kb', 'mb', 'gb']" @click.prevent="max_file_size_mb = mb" :class="max_file_size_mb == mb ? ['bg-sky-400', 'text-white'] : ['text-gray-500']" href="#" class="block px-4 py-2 text-sm capitalize hover:bg-sky-500 hover:text-white focus:text-white">
+                                    <a v-for="mb in Object.keys(size_units)" @click.prevent="size_unit = mb; max_file_size_dropdown = false" :class="size_unit == mb ? ['bg-sky-400', 'text-white'] : ['text-gray-500']" href="#" class="block px-4 py-2 text-sm capitalize hover:bg-sky-500 hover:text-white focus:text-white">
                                         {{mb.toUpperCase()}}
                                     </a>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-4 px-4">
+                    <div class="flex items-center">
+                        <label for="" class="w-64"></label>
+                        <div class="w-full">
+                            <div v-if="savedSize" class="bg-green-100 text-green-400 p-3 rounded-sm mb-2">Saved!</div>
+                            <div v-if="limit_error" class="bg-red-100 text-red-400 p-3 rounded-sm mb-2">You can't set value more than {{size(wp_max_upload_size)}}</div>
+                            <button v-else @click.prevent="saveSize()" class="bg-sky-300 hover:bg-sky-500 text-white focus:text-white px-8 py-2 transition duration-150 rounded-sm text-lg ">Save Settings</button>
                         </div>
                     </div>
                 </div>
