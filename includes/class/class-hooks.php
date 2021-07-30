@@ -52,6 +52,39 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             return $mimes;
         }
 
+        function parse_size($size)
+        {
+            $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+            $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+            if ($unit) {
+                // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+                return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+            } else {
+                return round($size);
+            }
+        }
+
+        function file_upload_max_size()
+        {
+            static $max_size = -1;
+
+            if ($max_size < 0) {
+                // Start with post_max_size.
+                $post_max_size = $this->parse_size(ini_get('post_max_size'));
+                if ($post_max_size > 0) {
+                    $max_size = $post_max_size;
+                }
+
+                // If upload_max_size is less, then reduce. Except if upload_max_size is
+                // zero, which indicates no limit.
+                $upload_max = $this->parse_size(ini_get('upload_max_filesize'));
+                if ($upload_max > 0 && $upload_max < $max_size) {
+                    $max_size = $upload_max;
+                }
+            }
+            return $max_size / MB_IN_BYTES;
+        }
+
         public function admin_enqueue_scripts()
         {
             $localizable_array = [
@@ -59,14 +92,21 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
                 'ajaxurl' => admin_url('admin-ajax.php'),
                 'roles' => $this->wp_roles_array(),
                 'suggestions' => $this->default_suggestions(), 
-                'extentions' => $this->getExtentions()
+                'extentions' => $this->getExtentions(),
+                'max_upload_size' => $this->file_upload_max_size(),
+                'sizes' => [
+                    'bytes' => 1, 
+                    'kb' => KB_IN_BYTES,
+                    'mb' => MB_IN_BYTES,
+                    'gb' => GB_IN_BYTES,                   
+                ]
             ];
 
             wp_register_script('cmt_options', '');
             wp_localize_script('cmt_options', '_cmt', $localizable_array);
-            wp_enqueue_script('cmt_options');
-            wp_enqueue_script('cmt-vue', 'https://unpkg.com/vue@next'); 
+            wp_enqueue_script('cmt_options'); 
             wp_enqueue_style('cmt-admin', plugin_dir_url( CMT_FILE ) . 'public/css/admin.min.css');
+            wp_enqueue_script('cmt-vue', plugin_dir_url( CMT_FILE ) . 'public/js/vue.global.prod.js', ['jquery'], filemtime(plugin_dir_path( CMT_FILE ) . 'public/js/vue.global.prod.js'), true);
             wp_enqueue_script('cmt-admin', plugin_dir_url( CMT_FILE ) . 'public/js/admin.js', ['jquery'], filemtime(plugin_dir_path( CMT_FILE ) . 'public/js/admin.js'), true);
         }
 

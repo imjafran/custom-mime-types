@@ -11,7 +11,11 @@ cmt.init = () => {
 };
 
 cmt.show = (page) => {
-  $(`[data-content="${page}"]`).fadeIn(200).siblings().hide(0);
+  $(`[data-content="${page}"]`).fadeIn(200).addClass('active').siblings().hide(0).removeClass('active');
+  $(`[data-href="${page}"]`) 
+    .addClass("active")
+    .siblings()
+    .removeClass("active");
 };
 
 const cmt_vue = Vue.createApp({
@@ -23,10 +27,15 @@ const cmt_vue = Vue.createApp({
       loader: 10,
       per_page: 10,
       pagination: 1,
+      max_pagination: -1,
       search: "",
       suggestions: {},
       roles: {},
       extentions: {},
+      success_msg: "",
+      max_file_size: 20, 
+      max_file_size_mb: 'mb' ,
+      max_file_size_dropdown: false ,
     };
   },
   computed: {
@@ -49,6 +58,9 @@ const cmt_vue = Vue.createApp({
       if (this.current.roles.length == 0) {
         msg = "Select at least one role";
       }
+      if (this.current.types.length == 0) {
+        msg = "Mime type is required";
+      }
 
       if (current_ext.length == 0) {
         msg = "Extention name is required";
@@ -56,6 +68,30 @@ const cmt_vue = Vue.createApp({
 
       return msg;
     },
+    getExtentions() {
+      let s = this.search.trim().toLowerCase(), extentions = {}
+      
+      if (this.extentions) {
+        Object.keys(this.extentions).forEach((ext) => {
+          if(s.length == 0 || ext.search(s) > -1 || this.extentions[ext].types.search(s) > -1) extentions[ext] = this.extentions[ext]
+        });
+      }
+
+      this.max_pagination = Math.ceil(Object.keys(extentions).length / this.per_page);
+
+      let sorted_keys = Object.keys(extentions).slice(
+          (this.pagination - 1) * this.per_page,
+          this.pagination * this.per_page
+        ),
+        sorted_extentions = {};
+
+      sorted_keys.forEach(sorted_key => {
+        sorted_extentions[sorted_key] = this.extentions[sorted_key];
+      });
+ 
+      return sorted_extentions;
+        
+    }
   },
   methods: {
     show(page) {
@@ -103,6 +139,8 @@ const cmt_vue = Vue.createApp({
     saveCurrent() {
       this.extentions[this.current_extention] = this.current;
       this.saveExtentions();
+      this.mode = "edit"
+      this.success_msg = "Saved!";
     },
     async saveExtentions() {
       let mimes = serialize(this.extentions);
@@ -113,22 +151,21 @@ const cmt_vue = Vue.createApp({
           mimes: mimes,
           action: "cmt_save_mimes",
         },
-        function (res) {
-          console.log(res);
+        function (res) { 
           return res;
         }
       );
-      },
-      deleteMime(ext) {
-          if (this.extentions[ext].delete) {
-            //   console.log("delete 2");
-              delete this.extentions[ext];
-              this.saveExtentions()
-          } else {
-              this.extentions[ext].delete = true
-            //   console.log('delete 1');
-          }
-    }
+    },
+    deleteMime(ext) {
+      if (this.extentions[ext].delete) {
+        //   console.log("delete 2");
+        delete this.extentions[ext];
+        this.saveExtentions();
+      } else {
+        this.extentions[ext].delete = true;
+        //   console.log('delete 1');
+      }
+    },
   },
   created() {
     this.roles = _cmt.roles;

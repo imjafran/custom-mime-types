@@ -7,35 +7,35 @@
 
     <!-- navigation  -->
 
-    <nav class="flex items-center bg-gray-100">
-        <h3 class="mx-4 font-bold text-lg">Custom MIME Types</h3>
-        <div class="flex text-sm uppercase items-center font-semibold">
-            <a href="#mimes" @click="show('mimes')" class="tracking-wide text-gray-700 hover:bg-sky-500 hover:text-white transition duration-150 px-8 py-4 border-l border-gray-200 focus:ring-0 focus:border-0">Mimes</a>
-            <a href="#settings" @click="show('settings')" class="tracking-wide text-gray-700 hover:bg-sky-500 hover:text-white transition duration-150 px-8 py-4">Settings</a>
+    <nav class="cmt_nav">
+        <h3 class="cmt_header">Custom MIME Types</h3>
+        <div class="cmt_ul">
+            <a data-href="mimes" href="#mimes" @click="show('mimes')" class="cmt_nav_a">Mimes</a>
+            <a data-href="settings" href="#settings" @click="show('settings')" class="cmt_nav_a">Settings</a>
         </div>
     </nav>
 
     <!-- main  -->
-    <div class="main m-1 p-2">
+    <div class="main p-6">
         <!-- mime types  -->
         <section data-content="mimes" style="display: none;">
             <div class="flex justify-between flex-col sm:flex-row gap-3">
-                <div class="text-sm w-full overflow-auto">
+                <div class="text-lg w-full overflow-auto">
                     <div class="text-right mb-3 flex items-center justify-between">
                         <div class="flex items-center h-10">
-                            <select class="form-select px-4 py-3 h-10 mr-2">
-                                <option v-for="n in [10, 50, 100, 500, -1]" :value="n">Show {{n == -1 ? 'All' : n}}</option>
-                            </select>
+
+                            <button :disabled="pagination == 1" :class="pagination == 1 ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="--pagination" class="inline-flex items-center px-3 py-2 roundded-sm"><span class="dashicons dashicons-arrow-left-alt2"></span> Previous</button>
+                            <button :disabled="pagination == max_pagination" :class="pagination == max_pagination ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="++pagination" class="inline-flex items-center rounded-sm px-3 py-2 mx-2">Next <span class="dashicons dashicons-arrow-right-alt2"></span></button>
 
                             <input type="text" v-model="search" class="form-input text-sm px-2 py-2 h-10" placeholder="Search Extention">
                         </div>
                         <a href="#" @click.prevent="newExt()" class="px-4 py-2 rounded-sm bg-sky-300 cursor-pointer bg-sky-50 hover:bg-sky-400 inline-flex items-center justify-center text-white hover:text-white">Add new</a>
                     </div>
                     <div class="overflow-auto w-full">
-                        <table class="mb-6 table-auto w-full p-0 m-0 bg-gray-50 border border-gray-100 overflow-hidden rounded-sm overflow-hidden">
+                        <table v-if="Object.keys(getExtentions).length" class="mb-6 table-auto w-full p-0 m-0 bg-gray-50 border border-gray-100 overflow-hidden rounded-sm overflow-hidden">
                             <thead class="border-b border-gray-200">
                                 <tr class="bg-gray-100 text-xs text-gray-500">
-                                    <th scope="col" class="max-w-20 text-left font-normal px-3 py-3 border-r border-gray-200">Extension</th>
+                                    <th scope="col" class="max-w-20 text-left font-normal px-3 py-3 border-r border-gray-200">{{Object.keys(getExtentions).length}} Extension{{Object.keys(getExtentions).length > 1 ? 's': '' }}</th>
                                     <th scope="col" class="text-left font-normal px-3 py-3 border-r border-gray-200">Types</th>
                                     <th scope="col" class="text-left font-normal px-3  border-r border-gray-200">Permissions</th>
                                     <th scope="col" class="text-center font-normal px-3  border-r border-gray-200">Status</th>
@@ -43,10 +43,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(mime, ext) in extentions" class="hover:bg-white transition duration-150 cursor-pointer border-b border-gray-100" :class="{'bg-white' : current.extention == mime.extention && mode == 'edit'}">
+                                <tr v-for="(mime, ext) in getExtentions" class="hover:bg-white transition duration-150 cursor-pointer border-b border-gray-100" :class="{'bg-white' : current_extention == ext && mode == 'edit'}">
                                     <td class="px-3 max-w-20 font-bold  border-r border-gray-100 " @click.prevent="edit(ext)">.{{ext}}</td>
-                                    <td class="px-3 max-w-64 border-r border-gray-100 " @click.prevent="edit(ext)">{{mime.types}}</td>
-                                    <td class="px-3  border-r border-gray-100 " @click.prevent="edit(ext)">{{mime_roles(mime)}}</td>
+                                    <td class="px-3 max-w-64 border-r border-gray-100 text-sm" @click.prevent="edit(ext)">{{mime.types}}</td>
+                                    <td class="px-3  border-r border-gray-100 text-sm" @click.prevent="edit(ext)">{{mime_roles(mime)}}</td>
                                     <td class="px-3 text-center border-r border-gray-100 " @click.prevent="edit(ext)">{{mime.enabled ? 'Enabled' : 'Disabled'}}</td>
                                     <td class="h-12 text-right px-3 flex items-center justify-start">
                                         <a href="#" :title="`(mime.enabled ? 'Disable' : 'Enable') .${mime.extention}`" @click.prevent="mime.enabled = !mime.enabled; saveExtentions()" class="mr-1 w-8 h-8 rounded-sm transition duration-150 inline-flex items-center justify-center focus:ring-0" :class="mime.enabled ? ['bg-red-200'] : ['bg-green-200']"><span class="dashicons text-white" :class="mime.enabled ? 'dashicons-no' : 'dashicons-yes'"></span></a>
@@ -58,6 +58,7 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div v-else class="bg-red-100 text-red-400 rounded-md m-3 px-6 py-4 text-center">No Extention Found</div>
                     </div>
 
                 </div>
@@ -83,7 +84,7 @@
                                     <label for="" class="text-gray-400 mb-2 block text-xs">Suggestions</label>
                                     <div class="relative">
                                         <div class="w-full  flex items-center flex-wrap gap-1">
-                                            <button v-for="(types, ext) in suggestions" @click.prevent="current_extention = ext; current.types = types" class="bg-sky-300 transition duration-150 opacity-75 hover:opacity-100 text-white rounded-sm inline-flex items-center justify-center px-4 py-2 text-sm tracking-wide">.{{ext}}</button>
+                                            <button v-for="(types, ext) in suggestions" @click.prevent="current_extention = ext; current.types = types" class="bg-sky-300 transition duration-150 opacity-75 hover:opacity-100 text-white rounded-sm inline-flex items-center justify-center px-4 py-2 tracking-wide">.{{ext}}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -97,13 +98,17 @@
                                     <label for="" class="text-gray-400 mb-2 block text-xs">Role Permissions</label>
                                     <div class="relative">
                                         <div class="w-full  flex items-center flex-wrap gap-1">
-                                            <button v-for="(label, role) in roles" :class="current.roles.includes(role) ? ['bg-sky-400'] : ['bg-gray-200', 'text-gray-500']" @click.prevent="toggleRole(role)" class="transition duration-150 text-white rounded-sm inline-flex items-center justify-center px-4 py-2 text-sm tracking-wide">{{label}}</button>
+                                            <button v-for="(label, role) in roles" :class="current.roles.includes(role) ? ['bg-sky-400'] : ['bg-gray-200', 'text-gray-500']" @click.prevent="toggleRole(role)" class="transition duration-150 text-white rounded-sm inline-flex items-center justify-center px-4 py-2  tracking-wide">{{label}}</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mt-4 mb-4">
+                                    <div class="my-2 px-4 py-4 rounded-md bg-green-50 text-green-400 text-sm" v-if="success_msg">{{success_msg}}</div>
                                     <div class="my-2 px-4 py-4 rounded-md bg-red-50 text-red-400 text-sm" v-if="error">{{error}}</div>
-                                    <button @click.prevent="saveCurrent()" v-if="!error" class="bg-sky-500 rounded-sm px-8 py-2 text-lg tracking-wide  text-white hover:bg-sky-600 transition duration-150">Save</button>
+                                    <div>
+                                        <button @click.prevent="saveCurrent()" v-if="!error" class="bg-sky-500 rounded-sm px-8 py-2 text-lg tracking-wide  text-white hover:bg-sky-600 transition duration-150">Save</button>
+                                        <button @click.prevent="newExt()" v-if="mode == 'edit'" class="ml-2 bg-gray-300 rounded-sm px-8 py-2 text-lg tracking-wide  text-white hover:bg-red-600 transition duration-150">Cancel</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -116,7 +121,33 @@
 
         <!-- settings  -->
         <section data-content="settings" style="display: none;">
-            settings
+            <h3 class="mb-3 text-xl text-gray-600">Common Settings</h3>
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+                <div class="mb-3">
+                    <div class="flex items-center">
+                        <label for="" class="w-64 text-gray-500">Maximum Upload File Size</label>
+                        <div class="flex items-center">
+                            <input type="text" class="form-input h-12 w-12" placeholder="Maximum File Size">
+                            <div class="relative">
+                                <button @click="max_file_size_dropdown = !max_file_size_dropdown" class="relative z-10 block bg-white p-2 focus:outline-none flex items-center">
+                                    <span class="mr-2  text-gray-500">{{max_file_size_mb.toUpperCase()}}</span>
+                                    <svg class="h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+
+                                <div v-show="max_file_size_dropdown" @click="max_file_size_dropdown = false" class="fixed inset-0 h-full w-full z-10"></div>
+
+                                <div v-show="max_file_size_dropdown" class="absolute right-0  w-32 bg-white rounded-md shadow-xl z-20">
+                                    <a v-for="mb in ['bytes', 'kb', 'mb', 'gb']" @click.prevent="max_file_size_mb = mb" :class="max_file_size_mb == mb ? ['bg-sky-400', 'text-white'] : ['text-gray-500']" href="#" class="block px-4 py-2 text-sm capitalize hover:bg-sky-500 hover:text-white focus:text-white">
+                                        {{mb.toUpperCase()}}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 </div>

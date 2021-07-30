@@ -2,8 +2,8 @@ const colors = require("tailwindcss/colors");
 
 module.exports = {
   purge: {
-    enabled: false,
-    content: ["./includes/templates/admin/*.php"],
+    enabled: true,
+    content: ["./includes/templates/admin/dashboard.php"],
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
@@ -28,8 +28,6 @@ module.exports = {
     },
   },
   plugins: [
-    require("@tailwindcss/forms")({
-      strategy: "class",
-    }),
+    require("@tailwindcss/forms"),
   ],
 }; 
