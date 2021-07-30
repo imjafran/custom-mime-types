@@ -142,14 +142,17 @@ const cmt_vue = Vue.createApp({
       this.mode = "edit"
       this.success_msg = "Saved!";
     },
-    async saveExtentions() {
-      let mimes = serialize(this.extentions);
+    async saveSettings() {
+
+      let
+        mimes = serialize(this.extentions),
+        uploads = 
 
       $.post(
         _cmt.ajaxurl,
         {
           mimes: mimes,
-          action: "cmt_save_mimes",
+          action: "cmt_save_settings",
         },
         function (res) { 
           return res;
@@ -166,11 +169,18 @@ const cmt_vue = Vue.createApp({
         //   console.log('delete 1');
       }
     },
+    size(bytes) {
+      var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+      if (bytes == 0) return '0 Byte';
+      var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+      return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    }
   },
   created() {
     this.roles = _cmt.roles;
     this.suggestions = _cmt.suggestions;
     this.extentions = _cmt.extentions;
+    this.wp_max_upload_size = _cmt.wp_max_upload_size;
     this.newExt();
     console.log(_cmt);
   },

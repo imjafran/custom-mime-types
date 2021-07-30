@@ -21,26 +21,30 @@ if (!class_exists('\Custom_MIME_Types\Ajax')) {
         { 
 
             // all endpoints 
-            $ajax_endpoints = [
-                'test' => 'test',
-                'cmt_save_mimes' => 'cmt_save_mimes',
+            $ajax_endpoints = [ 
+                'cmt_save_settings' => 'cmt_save_settings',
             ];
             
             // register ajax 
             foreach($ajax_endpoints as $ajax_endpoint => $callback){
                 add_action( 'wp_ajax_' . $ajax_endpoint, [$this, $callback]);
             }
-        }
+        } 
 
-        function test(){
-            wp_send_json_success();
-        }    
+        function cmt_save_settings(){
 
-        function cmt_save_mimes(){
+            // mimes 
             $mimes = sanitize_text_field( $_REQUEST['mimes'] ?? false );
-
             update_option('_cmt_mimes', $mimes);
-            wp_send_json_success($mimes);
+
+
+            // upload settings 
+            $_cmt_uploads = sanitize_text_field( $_REQUEST['uploads'] ?? false );
+            update_option('_cmt_uploads', $_cmt_uploads);
+
+
+            // response 
+            wp_send_json_success();
         }
     
     }

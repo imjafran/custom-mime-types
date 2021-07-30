@@ -20,14 +20,14 @@
         <!-- mime types  -->
         <section data-content="mimes" style="display: none;">
             <div class="flex justify-between flex-col sm:flex-row gap-3">
-                <div class="text-lg w-full overflow-auto">
-                    <div class="text-right mb-3 flex items-center justify-between">
+                <div class="w-full overflow-auto">
+                    <div class="text-right mb-3 flex items-center justify-between text-sm">
                         <div class="flex items-center h-10">
 
-                            <button :disabled="pagination == 1" :class="pagination == 1 ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="--pagination" class="inline-flex items-center px-3 py-2 roundded-sm"><span class="dashicons dashicons-arrow-left-alt2"></span> Previous</button>
-                            <button :disabled="pagination == max_pagination" :class="pagination == max_pagination ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="++pagination" class="inline-flex items-center rounded-sm px-3 py-2 mx-2">Next <span class="dashicons dashicons-arrow-right-alt2"></span></button>
+                            <button :disabled="pagination == 1" :class="pagination == 1 ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="--pagination" class="inline-flex items-center px-3 py-2 roundded-sm transition duration-150"><span class="dashicons dashicons-arrow-left-alt2"></span> Previous</button>
+                            <button :disabled="pagination == max_pagination" :class="pagination == max_pagination ? ['bg-gray-100', 'hover:bg-gray-100', 'text-gray-500', 'hover:text-gray-500'] : ['bg-sky-50', 'text-gray-500', 'hover:bg-sky-400', 'hover:text-white']" @click.prevent="++pagination" class="inline-flex items-center rounded-sm px-3 py-2 mx-2 transition duration-150">Next <span class="dashicons dashicons-arrow-right-alt2"></span></button>
 
-                            <input type="text" v-model="search" class="form-input text-sm px-2 py-2 h-10" placeholder="Search Extention">
+                            <input type="text" v-model="search" @input="pagination = 1" class="form-input text-sm px-2 py-2 h-9" placeholder="Search Extention">
                         </div>
                         <a href="#" @click.prevent="newExt()" class="px-4 py-2 rounded-sm bg-sky-300 cursor-pointer bg-sky-50 hover:bg-sky-400 inline-flex items-center justify-center text-white hover:text-white">Add new</a>
                     </div>
@@ -103,8 +103,8 @@
                                     </div>
                                 </div>
                                 <div class="mt-4 mb-4">
-                                    <div class="my-2 px-4 py-4 rounded-md bg-green-50 text-green-400 text-sm" v-if="success_msg">{{success_msg}}</div>
-                                    <div class="my-2 px-4 py-4 rounded-md bg-red-50 text-red-400 text-sm" v-if="error">{{error}}</div>
+                                    <div class="my-2 px-4 py-4 rounded-md bg-green-50 text-green-400 text-sm border border-green-100" v-if="success_msg">{{success_msg}}</div>
+                                    <div class="my-2 px-4 py-4 rounded-md bg-red-50 text-red-400 text-sm border border-red-100" v-if="error">{{error}}</div>
                                     <div>
                                         <button @click.prevent="saveCurrent()" v-if="!error" class="bg-sky-500 rounded-sm px-8 py-2 text-lg tracking-wide  text-white hover:bg-sky-600 transition duration-150">Save</button>
                                         <button @click.prevent="newExt()" v-if="mode == 'edit'" class="ml-2 bg-gray-300 rounded-sm px-8 py-2 text-lg tracking-wide  text-white hover:bg-red-600 transition duration-150">Cancel</button>
@@ -122,14 +122,18 @@
         <!-- settings  -->
         <section data-content="settings" style="display: none;">
             <h3 class="mb-3 text-xl text-gray-600">Common Settings</h3>
-            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
-                <div class="mb-3">
+            <div class="p-4 rounded-md border border-gray-200">
+                <div class="bg-gray-100 mb-3 text-gray-500 px-4 py-6 rounded-sm text-sm tracking-wide">
+                    <div><span class="font-bold">Important: </span>Maximum allowed upload size <span class="uppercase font-bold">{{size(wp_max_upload_size)}}</span> is configured by the server itself.</div>
+                    <div>It's <span class="uppercase font-bold">NOT POSIBLE</span> to increase the limit more than {{size(wp_max_upload_size)}} using a plugin. Contact your hosting provider to increase the limit</div>
+                </div>
+                <div class="mb-3 px-4">
                     <div class="flex items-center">
                         <label for="" class="w-64 text-gray-500">Maximum Upload File Size</label>
                         <div class="flex items-center">
-                            <input type="text" class="form-input h-12 w-12" placeholder="Maximum File Size">
+                            <input type="text" class="form-input inline-block h-9 w-12 px-4" size="12" placeholder="Size">
                             <div class="relative">
-                                <button @click="max_file_size_dropdown = !max_file_size_dropdown" class="relative z-10 block bg-white p-2 focus:outline-none flex items-center">
+                                <button @click="max_file_size_dropdown = !max_file_size_dropdown" class="border border-gray-100 relative z-10 block bg-white p-2 focus:outline-none flex items-center">
                                     <span class="mr-2  text-gray-500">{{max_file_size_mb.toUpperCase()}}</span>
                                     <svg class="h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />

@@ -7,7 +7,7 @@
  * Description:  Add any custom MIME types to be uploaded from admin panel easily, upload various type of files.
  * Textdomain: custommimetypes
  */
-
+ 
 
 defined( 'ABSPATH' ) or die();
 
