@@ -42,7 +42,7 @@
                                 <tr v-for="(mime, ext) in getExtentions" :class="{'bg-white' : current_extention == ext && mode == 'edit'}">
                                     <td @click.prevent="edit(ext)">.{{ext}}</td>
                                     <td class="mobile_hidden" @click.prevent="edit(ext)">{{mime.types}}</td>
-                                    <td class="" @click.prevent="edit(ext)">{{mime_roles(mime)}}</td>
+                                    <td class="text-xs" @click.prevent="edit(ext)">{{mime_roles(mime)}}</td>
                                     <td class="text-center" @click.prevent="edit(ext)">{{mime.enabled ? '<?php echo __('Enabled', 'custommimetypes'); ?>' : '<?php echo __('Disabled', 'custommimetypes'); ?>'}}</td>
                                     <td class="cmt_mime_quick_buttons">
                                         <a href="#" :title="`(mime.enabled ? '<?php echo __('Disable', 'custommimetypes'); ?>' : '<?php echo __('Enable', 'custommimetypes'); ?>') .${mime.extention}`" @click.prevent="mime.enabled = !mime.enabled; saveSettings()" class="button-enabled-disabled" :class="mime.enabled ? ['bg-red-200'] : ['bg-green-200']"><span class="dashicons text-white" :class="mime.enabled ? 'dashicons-no' : 'dashicons-yes'"></span></a>

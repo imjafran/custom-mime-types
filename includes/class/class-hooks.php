@@ -147,7 +147,7 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             foreach($allowed_mimes as $ext => $types){
                 $new_mimes[$ext] = [
                     'types' => $types,
-                    'roles' => ['administrator', 'editor', 'author'],
+                    'roles' => array_keys($this->wp_roles_array()),
                     'enabled' => 1
                 ];
             }

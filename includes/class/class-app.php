@@ -2,21 +2,12 @@
 
 namespace Custom_MIME_Types;
 
+/**
+ * Final App Class
+ */
 if( !class_exists( '\Custom_MIME_Types\App' )) {
     final class App
-    {
-
-        /**
-         * Naming the app
-         */
-        public const NAME = 'Custom MIME Types';
-
-
-        /**
-         * App Version
-         */
-        public const VERSION = '1.0.0';
-
+    { 
 
         public static function init()
         {
@@ -61,15 +52,26 @@ if( !class_exists( '\Custom_MIME_Types\App' )) {
         {
             $activated = (bool) get_option('_cmt_activated');            
             
-            // if(!$activated){
+            if(!$activated){
+
+                /**
+                 * Reset all current available mimes 
+                 */
                 $hooks = new \Custom_MIME_Types\Hooks();
                 $hooks->reset_default_extentions();
 
+                /**
+                 * Set maximum upload size according to server 
+                 */
                 update_option('_cmt_max_upload_size', wp_max_upload_size());
+
+                /**
+                 * Current size unit : mb 
+                 */
                 update_option('_cmt_size_unit','mb');
 
                 update_option('_cmt_activated', 1);
-            // }
+            }
            
         }
 
@@ -79,6 +81,7 @@ if( !class_exists( '\Custom_MIME_Types\App' )) {
          */
         public function app_deactivation()
         {
+            // do nothing
         }
 
 
