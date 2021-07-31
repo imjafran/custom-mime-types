@@ -1,0 +1,13 @@
+{
+  "exclude": [
+    "src",
+    ".git",
+    ".gitignore",
+    "appsero.json",
+    "package-lock.json",
+    "package.json",
+    "tailwind-admin.js",
+    "wepback.config.js",
+    ".babelrc"
+  ]
+}
