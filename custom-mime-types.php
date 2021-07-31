@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       Custom Mime Types
- * Plugin URI:        https://facebook.com/iamjafran/
+ * Plugin URI:        https://returnxero.com/custom-mime-types/
  * Description:       Customize allowed uploadable file extention within a single click, upload various type of files on your website. Set role permissions and maximum upload file size in one place. 
  * Version:           1.0.0
  * Requires at least: 5.0
