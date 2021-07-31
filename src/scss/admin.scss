@@ -1,14 +1,25 @@
-@tailwind base;
+
 @tailwind components;
 /*
     Main wrapper
 */
+
 
 body {
     @apply font-sans;
 }
  
 .cmt_wrapper {
+
+    * {
+        @apply p-0 m-0 no-underline;
+    }
+
+    button, select {
+        @apply border-0 ring-0 outline-none cursor-pointer;
+    }
+
+
     @apply text-sm bg-white relative;
 
     .cmt_loader {
@@ -194,10 +205,10 @@ body {
         }
 
         .error-message {
-            @apply font-normal bg-red-50 border-red-100 text-red-400 rounded-md m-3 px-6 py-4 text-center;
+            @apply font-normal bg-red-50 border-red-100 text-red-400 rounded-md my-3 px-6 py-4 text-center;
         }
         .success-message {
-            @apply font-normal bg-green-50 border-green-100 text-green-400 rounded-md m-3 px-6 py-4 text-center;
+            @apply font-normal bg-green-50 border-green-100 text-green-400 rounded-md my-3 px-6 py-4 text-center;
         }
     }
 
@@ -221,6 +232,61 @@ body {
 
         .fleld-set {
             @apply mb-4 px-4;
+        }
+        .settings-flex {
+            @apply flex items-center flex-col sm:flex-row;
+
+            label {
+                @apply w-64 text-gray-500 mb-2 md:m-0;
+            }
+   
+            & > div {
+                @apply w-full flex items-center;
+
+            }
+
+            .form-size {
+                @apply relative;
+                button {
+                    border: 1px solid;
+                    @apply border border-gray-100 relative z-10 block bg-white px-6  py-3 focus:outline-none flex items-center;
+
+                    span {
+                        @apply mr-2 text-gray-500;
+                    }
+
+                    svg {
+                        @apply h-5 w-5 text-gray-800 fill-current;
+                    }
+                }
+                .overlay {
+                    @apply fixed inset-0 h-full w-full z-10;
+                } 
+                .dropdown-div {
+                    @apply absolute right-0 w-32 bg-white rounded-md shadow-xl z-20;
+
+                    a {
+                        @apply block px-4 py-2 text-sm capitalize hover:bg-sky-500 hover:text-white focus:text-white text-gray-500;
+
+                        &.active {
+                            @apply bg-sky-400 text-white;
+                        }
+                    }
+                }             
+            }
+
+            .button-set {
+                @apply flex items-center flex-col sm:flex-row;
+
+
+                &> div {
+                    @apply w-full;
+
+                    label {
+                        @apply w-64;
+                    }
+                }
+            }
         }
     }
 

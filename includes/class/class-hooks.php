@@ -45,8 +45,20 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
 
         function default_suggestions(){
             $default_suggestions = [
-                "jhj" => "image/webp", 
-                "fgfg" => "image/svg",
+                "webp" => "application/octet-stream",
+                "svg" => "application/octet-stream",
+                "bin" => "application/octet-stream",
+                "eot" => "application/vnd.ms-fontobject",
+                "jar" => "application/java-archive",
+                "vue" => "text/js",
+                "jsx" => "text/js",
+                "json" => "application/json",
+                "ts" => "video/mp2t",
+                "otf" => "font/otf",
+                "ttf" => "font/ttf",
+                "woff" => "font/woff",
+                "woff2" => "font/woff2",
+                "weba" => "audio/webm",
             ];
 
             return apply_filters('cmt_default_suggestions', $default_suggestions );
@@ -133,7 +145,7 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             foreach($allowed_mimes as $ext => $types){
                 $new_mimes[$ext] = [
                     'types' => $types,
-                    'roles' => ['superadmin', 'administrator', 'editor', 'author'],
+                    'roles' => ['administrator', 'editor', 'author'],
                     'enabled' => 1
                 ];
             }

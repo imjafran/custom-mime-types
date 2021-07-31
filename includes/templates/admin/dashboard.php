@@ -129,23 +129,23 @@
                     </div>
                 </div>
                 <div class="fleld-set">
-                    <div class="flex items-center flex-col sm:flex-row">
-                        <label for="" class="w-64 text-gray-500 mb-2 mb:0"><?php echo __('Maximum Upload Size', 'custommimetypes'); ?></label>
-                        <div class="w-full flex items-center">
-                            <input v-model="max_upload_size" @input="strip_max_upload_size" type="text" class="form-input inline-block h-12 w-12 px-4" size="12" placeholder="Size">
-                            <div class="relative">
-                                <button @click="max_file_size_dropdown = !max_file_size_dropdown" class="border border-gray-100 relative z-10 block bg-white px-6 h-12 focus:outline-none flex items-center">
-                                    <span class="mr-2  text-gray-500">{{size_unit.toUpperCase()}}</span>
-                                    <svg class="h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <div class="settings-flex">
+                        <label for=""><?php echo __('Maximum Upload Size', 'custommimetypes'); ?></label>
+                        <div>
+                            <input v-model="max_upload_size" @input="strip_max_upload_size" type="text" class="form-input form-size" size="12" placeholder="Size">
+                            <div class="form-size">
+                                <button @click="max_file_size_dropdown = !max_file_size_dropdown">
+                                    <span>{{size_unit.toUpperCase()}}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
 
-                                <div v-show="max_file_size_dropdown" @click="max_file_size_dropdown = false" class="fixed inset-0 h-full w-full z-10"></div>
+                                <div v-show="max_file_size_dropdown" @click="max_file_size_dropdown = false" class="overlay"></div>
 
-                                <div v-show="max_file_size_dropdown" class="absolute right-0  w-32 bg-white rounded-md shadow-xl z-20">
-                                    <a v-for="mb in Object.keys(size_units)" @click.prevent="size_unit = mb; max_file_size_dropdown = false" :class="size_unit == mb ? ['bg-sky-400', 'text-white'] : ['text-gray-500']" href="#" class="block px-4 py-2 text-sm capitalize hover:bg-sky-500 hover:text-white focus:text-white">
-                                        {{mb.toUpperCase()}}
+                                <div v-show="max_file_size_dropdown" class="dropdown-div">
+                                    <a v-for="unit in Object.keys(size_units)" @click.prevent="size_unit = unit; max_file_size_dropdown = false" :class="{active: size_unit == unit}" href="#" class="">
+                                        {{unit.toUpperCase()}}
                                     </a>
                                 </div>
                             </div>
@@ -153,12 +153,12 @@
                     </div>
                 </div>
                 <div class="fleld-set">
-                    <div class="flex items-center flex-col sm:flex-row">
-                        <label for="" class="w-64"></label>
-                        <div class="w-full">
-                            <div v-if="savedSize" class="bg-green-100 text-green-400 p-3 rounded-sm mb-2"><?php echo __('Saved!', 'custommimetypes'); ?></div>
-                            <div v-if="limit_error" class="bg-red-100 text-red-400 p-3 rounded-sm mb-2"><?php echo __('You can\'t set value more than {{size(wp_max_upload_size)}}', 'custommimetypes'); ?></div>
-                            <button v-else @click.prevent="saveSize()" class="bg-sky-300 hover:bg-sky-500 text-white focus:text-white px-8 py-2 transition duration-150 rounded-sm text-lg "><?php echo __('Save Settings', 'custommimetypes'); ?></button>
+                    <div class="settings-flex">
+                        <label for="" class=""></label>
+                        <div class="">
+                            <div v-if="savedSize" class="success-message"><?php echo __('Saved!', 'custommimetypes'); ?></div>
+                            <div v-if="limit_error" class="error-message"><?php echo __('You can\'t set value more than {{size(wp_max_upload_size)}}', 'custommimetypes'); ?></div>
+                            <button v-else @click.prevent="saveSize()" class="cmt-button"><?php echo __('Save Settings', 'custommimetypes'); ?></button>
                         </div>
                     </div>
                 </div>
