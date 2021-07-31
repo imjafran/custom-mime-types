@@ -37,7 +37,9 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
         function wp_roles_array()
         {
             $editable_roles = get_editable_roles();
+            $roles = [];
             foreach ($editable_roles as $role => $details) { 
+                if( array_key_exists('upload_files', $details['capabilities']) )
                 $roles[esc_attr($role)] = translate_user_role($details['name']);
             }
             return $roles;
@@ -120,7 +122,7 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
                     'mb' => MB_IN_BYTES,
                     'gb' => GB_IN_BYTES,                   
                 ],
-                
+                'wp_roles_array' => $this->wp_roles_array()
             ];
 
             wp_register_script('cmt_options', '');

@@ -264,6 +264,7 @@ const cmt_vue = Vue.createApp({
       parseInt(_cmt.max_upload_size) /
       parseInt(_cmt.size_units[_cmt.size_unit]);
     this.newExt();
+    console.log(_cmt);
   },
   mounted() {
     cmt.init();
