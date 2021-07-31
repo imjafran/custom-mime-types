@@ -7,6 +7,10 @@ namespace Custom_MIME_Types;
  */
 defined('ABSPATH') or die();
 
+
+/**
+ * Ajax
+ */
 if (!class_exists('\Custom_MIME_Types\Ajax')) {
     /**
      * Class Ajax
@@ -31,24 +35,40 @@ if (!class_exists('\Custom_MIME_Types\Ajax')) {
             }
         } 
 
+
+        /**
+         * Save CMT Settings
+         */
         function cmt_save_settings(){
 
-            // mimes 
-            $mimes = sanitize_text_field( $_REQUEST['mimes'] ?? false );
+            if( !current_user_can('manage_options' ) ) {
+                wp_send_json_error();
+                wp_die();
+            }
+
+            /**
+             * Save mimes
+             */
+            $mimes = sanitize_text_field( $_REQUEST['mimes'] ?? '' );
             update_option('_cmt_mimes', $mimes);
 
 
-            // upload settings 
-            $max_upload_size = sanitize_text_field( $_REQUEST['max_upload_size'] ?? false );
+            /**
+             * Upload size
+             */
+            $max_upload_size = sanitize_text_field( $_REQUEST['max_upload_size'] ?? '' );
             update_option('_cmt_max_upload_size', $max_upload_size);
 
-            // size_unit
-            $size_unit = sanitize_text_field( $_REQUEST['size_unit'] ?? false );
+            /**
+             * Size unit
+             */
+            $size_unit = sanitize_text_field( $_REQUEST['size_unit'] ?? '' );
             update_option('_cmt_size_unit', $size_unit);
 
 
             // response 
-            wp_send_json_success($mimes);
+            wp_send_json_success();
+            wp_die();
         }
     
     }

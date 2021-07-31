@@ -7,6 +7,11 @@ namespace Custom_MIME_Types;
  */
 defined('ABSPATH') or die();
 
+/**
+ * 
+ * Hooks
+ */
+
 if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
     /**
      * Class Hooks
@@ -34,6 +39,10 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             
         }
 
+
+        /**
+         * Current available roles
+         */
         function wp_roles_array()
         {
             $editable_roles = get_editable_roles();
@@ -45,6 +54,10 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             return $roles;
         }
 
+
+        /**
+         * Suggested Mimes
+         */
         function default_suggestions(){
             $default_suggestions = [
                 "webp" => "application/octet-stream",
@@ -67,11 +80,18 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
         }
  
 
+        /**
+         * Current available extentions
+         */
         function getExtentions(){
             $mimes = json_decode(json_encode(maybe_unserialize(stripslashes(get_option('_cmt_mimes')))));
             return $mimes;
         }
 
+
+        /**
+         * Current maximum upload size according to server
+         */
         function file_upload_max_size()
         {
             static $max_size = -1;
@@ -93,6 +113,10 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             return $max_size;
         }
 
+
+        /**
+         * Parse size
+         */
         function parse_size($size)
         {
             $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
@@ -105,10 +129,13 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             }
         }
 
+
+        /**
+         * Enqueue admin scripts
+         */
         public function admin_enqueue_scripts()
         {
-            $localizable_array = [
-                "home" => home_url(),
+            $localizable_array = [ 
                 'ajaxurl' => admin_url('admin-ajax.php'),
                 'roles' => $this->wp_roles_array(),
                 'suggestions' => $this->default_suggestions(), 
@@ -121,8 +148,7 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
                     'kb' => KB_IN_BYTES,
                     'mb' => MB_IN_BYTES,
                     'gb' => GB_IN_BYTES,                   
-                ],
-                'wp_roles_array' => $this->wp_roles_array()
+                ]
             ];
 
             wp_register_script('cmt_options', '');
@@ -133,13 +159,21 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             wp_enqueue_script('cmt-admin', plugin_dir_url( CMT_FILE ) . 'public/js/admin.js', ['jquery'], filemtime(plugin_dir_path( CMT_FILE ) . 'public/js/admin.js'), true);
         }
 
+
+        /**
+         * Admin settings page
+         */
         public function admin_settings_page()
         {
-            add_submenu_page('options-general.php', 'Custom MIME Types', 'Custom MIME Types', 'administrator', 'custom-mime-types', function(){
+            add_submenu_page('options-general.php', 'Custom MIME Types', 'Custom MIME Types', 'manage_options', 'custom-mime-types', function(){
                 include_once plugin_dir_path( CMT_FILE ) . 'includes/templates/admin/dashboard.php';
             });
         }
 
+
+        /**
+         * Reset default extentions
+         */
         function reset_default_extentions(){
             $allowed_mimes = get_allowed_mime_types();
 
@@ -157,12 +191,19 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
             update_option( '_cmt_mimes', $new_mimes );
         }
 
+        /**
+         * Current custom upload size limit
+         */
         function cmt_upload_size_limit( $size ){
 
-            $custom_size = get_option('_cmt_max_upload_size');
+            $custom_size = (int) get_option('_cmt_max_upload_size');
             return $custom_size; 
         }
 
+
+        /**
+         * Check before uploading mimes if its available
+         */
         function cmt_upload_mimes( $mimes ){
 
             $custom_mimes = $this->getExtentions();
