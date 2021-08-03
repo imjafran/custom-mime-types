@@ -166,7 +166,7 @@ if ( !class_exists('\Custom_MIME_Types\Hooks' )) {
         public function admin_settings_page()
         {
             add_submenu_page('options-general.php', 'Custom MIME Types', 'Custom MIME Types', 'manage_options', 'custom-mime-types', function(){
-                include_once plugin_dir_path( CMT_FILE ) . 'includes/templates/admin/dashboard.php';
+                include_once plugin_dir_path( CMT_FILE ) . 'includes/templates/admin-dashboard.php';
             });
         }
 

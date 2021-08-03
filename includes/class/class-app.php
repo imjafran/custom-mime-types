@@ -50,9 +50,9 @@ if( !class_exists( '\Custom_MIME_Types\App' )) {
          */
         public function app_activation()
         {
-            $activated = (bool) get_option('_cmt_activated');            
+            $activated = get_option('_cmt_activated');            
             
-            if(!$activated){
+            if( $activated != 1){
 
                 /**
                  * Reset all current available mimes 
