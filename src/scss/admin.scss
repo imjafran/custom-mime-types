@@ -123,7 +123,11 @@ body {
                                     @apply h-12 cmt_flex justify-start flex items-center;
 
                                     .button-enabled-disabled {
-                                        @apply mr-1 w-8 h-8 rounded-sm transition duration-150 inline-flex items-center justify-center focus:ring-0;
+                                        @apply mr-1 w-8 h-8 rounded-sm transition duration-150 inline-flex items-center justify-center focus:ring-0 text-white bg-green-200;
+
+                                        &.enabled {
+                                            @apply bg-red-200;
+                                        }
                                     }
                                     .button-delete {
                                         @apply text-gray-400 w-8 h-8 rounded-sm hover:bg-red-400 transition duration-150 inline-flex items-center justify-center;
